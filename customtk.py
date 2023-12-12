@@ -3,19 +3,23 @@ from tkinter import PhotoImage
 import customtkinter
 import customtkinter as ctk
 from customtkinter import CTk, CTkFrame, CTkButton
+import PIL.Image
 from PIL import ImageTk,Image
+from tkinter import *
 import tkinter as tk
 import pygame
 import sqlite3
+from tkcalendar import Calendar
 
 customtkinter.set_appearance_mode("system")
 customtkinter.set_default_color_theme("blue")
 #import de utilerias de sqlite
-#from database_utils import agregar_cliente
+from database_utils import agregar_cliente,registrarPago
 
 conn = sqlite3.connect('BaseDatos.db') #vinculo la base de datos
 
 cursor = conn.cursor() # este es mi curson que me permite realizar consultar y modificaciona a la bd
+
 
 
 def jaja():
@@ -40,22 +44,28 @@ def cambiarVentana(ventanaActual, ventanaCambiar):
 def ventana_clientes():  #VENTANA DE CLIENTES
     jaja()
     
-    clientes = CTk()
-    clientes.geometry("800x440")
+    clientes = tk.Tk()
+    clientes.attributes("-fullscreen","false")
     clientes.title("clientes")
+    clientes.state('zoomed')
 
             # Cargar una imagen para volver atras
-    imagen = ctk.CTkImage(light_image=Image.open("./assets/volver.png"),
-                                  dark_image=Image.open("./assets/volver.png"),
-                                  size=(30, 30))
+    imagen = ctk.CTkImage(light_image=PIL.Image.open("./assets/volver.png"),
+                                dark_image=PIL.Image.open("./assets/volver.png"),
+                                size=(30, 30))
     
+    img1=ImageTk.PhotoImage(PIL.Image.open("./assets/gym2.png"))
 
-    # Crear un botón con la imagen
+
+    l1=customtkinter.CTkLabel(master=clientes,image=img1)
+    l1.pack()
     boton_con_imagen = ctk.CTkButton(clientes, image=imagen,text="Volver", command=lambda: (cambiarVentana(clientes, ventana_main)))
     boton_con_imagen.place(relx=0.03, rely=0.03)
     
     
         #FrameClientes
+
+    
     frame=customtkinter.CTkFrame(master=clientes, width=320, height=360, corner_radius=15,border_width=12,border_color="black")
     frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
     
@@ -68,7 +78,7 @@ def ventana_clientes():  #VENTANA DE CLIENTES
     button_registrarCliente.place(x=50, y=110)
 
 
-    button_actualizarCliente = customtkinter.CTkButton(master=frame, width=220, text="ACTUALIZAR CLIENTE", command=lambda: (cambiarVentana(clientes, ventana_AcutalizarClientes)), corner_radius=6)#clientes
+    button_actualizarCliente = customtkinter.CTkButton(master=frame, width=220, text="ACTUALIZAR CLIENTE", command=lambda: (cambiarVentana(clientes, ventana_ActualizarClientes)), corner_radius=6)#clientes
     button_actualizarCliente.place(x=50, y=165)
     
     button_consultarCliente = customtkinter.CTkButton(master=frame, width=220, text="CONSULTAR CLIENTE", command=click_boton, corner_radius=6)#clientes
@@ -79,58 +89,73 @@ def ventana_clientes():  #VENTANA DE CLIENTES
 
 
 def ventana_RegistrarCliente():
-    RegistrarCielte = CTk()
-    RegistrarCielte.geometry("800x600")
-    RegistrarCielte.title("cuotas")
+    RegistrarCliente = tk.Tk()
+    RegistrarCliente.geometry("1200x600")
+    RegistrarCliente.title("cuotas")
+    RegistrarCliente.state('zoomed')
     
 
-    imagen = ctk.CTkImage(light_image=Image.open("./assets/volver.png"),
-                                  dark_image=Image.open("./assets/volver.png"),
-                                  size=(30, 30))
+    imagen = ctk.CTkImage(light_image=PIL.Image.open("./assets/volver.png"),
+                                dark_image=PIL.Image.open("./assets/volver.png"),
+                                size=(30, 30))
     
+    img1=ImageTk.PhotoImage(PIL.Image.open("./assets/gym2.png"))
 
+
+    l1=customtkinter.CTkLabel(master=RegistrarCliente,image=img1)
+    l1.pack()
     # Crear un botón con la imagen
-    boton_con_imagen = ctk.CTkButton(RegistrarCielte, image=imagen,text="Volver", command=lambda: (cambiarVentana(RegistrarCielte, ventana_main)))
+    boton_con_imagen = ctk.CTkButton(RegistrarCliente, image=imagen,text="Volver", command=lambda: (cambiarVentana(RegistrarCliente, ventana_main)))
     boton_con_imagen.place(relx=0.03, rely=0.03)
     #FrameClientes
-    frame = customtkinter.CTkFrame(master=RegistrarCielte, width=320, height=500, corner_radius=15, border_color="black",border_width=12)
+
+    
+    frame = customtkinter.CTkFrame(master=RegistrarCliente, width=800, height=800, corner_radius=15, border_color="black",border_width=12)
     frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
     #LABEL TITULO
     label_titulo = customtkinter.CTkLabel(master=frame, text="Registrar clientes", font=('Century Gothic',20))
-    label_titulo.place(relx=0.26, rely=0.05)
+    label_titulo.place(relx=0.26, rely=0.03)
 
     #Entradas
     label_nombre = customtkinter.CTkLabel(master=frame, text="Nombre", font=('Century Gothic',15))
-    label_nombre.place(relx=0.32, rely=0.15)
+    label_nombre.place(relx=0.32, rely=0.1)
     entry_nombre = customtkinter.CTkEntry(master=frame, width=120, height=25, corner_radius=10)
-    entry_nombre.place(relx=0.5, rely=0.22, anchor=tk.CENTER)
+    entry_nombre.place(relx=0.5, rely=0.16, anchor=tk.CENTER)
 
     label_apellido = customtkinter.CTkLabel(master=frame, text="Apellido", font=('Century Gothic',15))
-    label_apellido.place(relx=0.32, rely=0.27)
+    label_apellido.place(relx=0.32, rely=0.2)
     entry_apellido = customtkinter.CTkEntry(master=frame, width=120, height=25, corner_radius=10)
-    entry_apellido.place(relx=0.5, rely=0.34, anchor=tk.CENTER)
+    entry_apellido.place(relx=0.5, rely=0.26, anchor=tk.CENTER)
 
     label_documento = customtkinter.CTkLabel(master=frame, text="Documento", font=('Century Gothic',15))
-    label_documento.place(relx=0.32, rely=0.39)
+    label_documento.place(relx=0.32, rely=0.3)
     entry_documento = customtkinter.CTkEntry(master=frame, width=120, height=25, corner_radius=10)
-    entry_documento.place(relx=0.5, rely=0.46, anchor=tk.CENTER)
+    entry_documento.place(relx=0.5, rely=0.36, anchor=tk.CENTER)
 
     label_correo = customtkinter.CTkLabel(master=frame, text="Correo", font=('Century Gothic',15))
-    label_correo.place(relx=0.32, rely=0.51)
+    label_correo.place(relx=0.32, rely=0.4)
     entry_correo = customtkinter.CTkEntry(master=frame, width=120, height=25, corner_radius=10)
-    entry_correo.place(relx=0.5, rely=0.58, anchor=tk.CENTER)
+    entry_correo.place(relx=0.5, rely=0.46, anchor=tk.CENTER)
 
     label_telefono = customtkinter.CTkLabel(master=frame, text="Telefono", font=('Century Gothic',15))
-    label_telefono.place(relx=0.32, rely=0.63)
+    label_telefono.place(relx=0.32, rely=0.5)
     entry_telefono = customtkinter.CTkEntry(master=frame, width=120, height=25, corner_radius=10)
-    entry_telefono.place(relx=0.5, rely=0.70, anchor=tk.CENTER)
+    entry_telefono.place(relx=0.5, rely=0.56, anchor=tk.CENTER)
+
 
 
     label_fechaNacimiento = customtkinter.CTkLabel(master=frame, text="Fecha de nacimiento", font=('Century Gothic',15)) # se ingresa ejemplo "año-mes-dia"
-    label_fechaNacimiento.place(relx=0.32, rely=0.75)
-    entry_fechaNacimiento = customtkinter.CTkEntry(master=frame, width=120, height=25, corner_radius=10)
-    entry_fechaNacimiento.place(relx=0.5, rely=0.82, anchor=tk.CENTER)
+    label_fechaNacimiento.place(relx=0.32, rely=0.58)
+
+    frameCalendario = customtkinter.CTkFrame(master=frame, width=300, height=300)
+    frameCalendario.place(relx=0.5, rely=0.75, anchor=tk.CENTER)
+    
+    # Crear un objeto Calendar
+    cal = Calendar(frameCalendario, selectmode="day", year=2023, month=10, day=23)
+
+    # Colocar los widgets en la ventana
+    cal.pack(pady=10)
 
     
     #boton confirmar
@@ -138,12 +163,12 @@ def ventana_RegistrarCliente():
         master=frame,
         width=220,
         text="Confirmar",
-        command=lambda: agregar_cliente([entry_nombre.get(),entry_apellido.get(), entry_correo.get(), entry_documento.get(), entry_fechaNacimiento.get(), entry_telefono.get()]),
+        command=lambda: agregar_cliente([entry_nombre.get(),entry_apellido.get(), entry_correo.get(), entry_documento.get(), cal.get_date(), entry_telefono.get()]),
         corner_radius=6
     )
     button_confirmar.place(relx=0.18, rely=0.90)
 
-    RegistrarCielte.mainloop()
+    RegistrarCliente.mainloop()
 
 class ProgramaABM_Clientes:
     def __init__(self, frame):
@@ -274,17 +299,21 @@ class ProgramaABM_Clientes:
     def __del__(self):
         self.conexion.close()
 
-def ventana_AcutalizarClientes():
-    actualizarClientes = CTk()
-    actualizarClientes.geometry("1280x600")
+def ventana_ActualizarClientes():
+    actualizarClientes = tk.Tk()
+    actualizarClientes.attributes("-fullscreen","false")
     actualizarClientes.title("Actualizar precios")
+    actualizarClientes.state('zoomed')
 
-    imagen = customtkinter.CTkImage(light_image=Image.open("./assets/volver.png"),
-                                  dark_image=Image.open("./assets/volver.png"),
-                                  size=(30, 30))
+    imagen = customtkinter.CTkImage(light_image=PIL.Image.open("./assets/volver.png"),
+                                dark_image=PIL.Image.open("./assets/volver.png"),
+                                size=(30, 30))
     
+    img1=ImageTk.PhotoImage(PIL.Image.open("./assets/gym2.png"))
 
-    # Crear un botón con la imagen
+
+    l1=customtkinter.CTkLabel(master=actualizarClientes,image=img1)
+    l1.pack()
     boton_con_imagen = ctk.CTkButton(text="Volver", master=actualizarClientes, image=imagen, command=lambda: (cambiarVentana(actualizarClientes, ventana_clientes)))
     boton_con_imagen.place(relx=0.03, rely=0.03)
 
@@ -375,17 +404,22 @@ class ProgramaABM:
     def __del__(self):
         self.conexion.close()
 
-def ventana_AcutalizarPrecios():
-    actualizarPrograma = CTk()
-    actualizarPrograma.geometry("800x440")
+def ventana_ActualizarPrecios():
+    actualizarPrograma = tk.Tk()
+    actualizarPrograma.attributes("-fullscreen","false")
     actualizarPrograma.title("Actualizar precios")
+    actualizarPrograma.state('zoomed')
 
-    imagen = ctk.CTkImage(light_image=Image.open("./assets/volver.png"),
-                                  dark_image=Image.open("./assets/volver.png"),
+    imagen = ctk.CTkImage(light_image=PIL.Image.open("./assets/volver.png"),
+                                  dark_image=PIL.Image.open("./assets/volver.png"),
                                   size=(30, 30))
     
 
-    # Crear un botón con la imagen
+    img1=ImageTk.PhotoImage(PIL.Image.open("./assets/gym2.png"))
+
+
+    l1=customtkinter.CTkLabel(master=actualizarPrograma,image=img1)
+    l1.pack()
     boton_con_imagen = ctk.CTkButton(master=actualizarPrograma, image=imagen,text="Volver", command=lambda: (cambiarVentana(actualizarPrograma, ventana_main)))
     boton_con_imagen.place(relx=0.03, rely=0.03)
     frame1=customtkinter.CTkFrame(master=actualizarPrograma, width=320, height=360, corner_radius=15, border_width=12)
@@ -404,12 +438,12 @@ def ventana_AcutalizarPrecios():
 def ventana_Programa():
     jaja()
     
-    programa = CTk()
-    programa.geometry("800x440")
+    programa = tk.Tk()
+    programa.attributes("-fullscreen","false")
     programa.title("clientes")
 
-    imagen = ctk.CTkImage(light_image=Image.open("./assets/volver.png"),
-                                  dark_image=Image.open("./assets/volver.png"),
+    imagen = ctk.CTkImage(light_image=PIL.Image.open("./assets/volver.png"),
+                                  dark_image=PIL.Image.open("./assets/volver.png"),
                                   size=(30, 30))
     
 
@@ -432,7 +466,7 @@ def ventana_Programa():
     button_registrarCliente.place(x=50, y=110)
 
 
-    button_consultarCliente = customtkinter.CTkButton(master=frame, width=220, text="ACTUALIZAR PRECIO", command= lambda : (cambiarVentana(programa, ventana_AcutalizarPrecios)), corner_radius=6)#clientes
+    button_consultarCliente = customtkinter.CTkButton(master=frame, width=220, text="ACTUALIZAR PRECIO", command= lambda : (cambiarVentana(programa, ventana_ActualizarPrecios)), corner_radius=6)#clientes
     button_consultarCliente.place(x=50, y=220)
 
 
@@ -441,63 +475,79 @@ def ventana_Programa():
 
 
 def ventana_pagoCuota():  #pagoCuota
-    Cuotas = CTk()
-    Cuotas.geometry("800x440")
+    Cuotas = tk.Tk()
+    Cuotas.attributes("-fullscreen","false")
+    Cuotas.geometry("1200x800")
     Cuotas.title("cuotas")
+    Cuotas.state('zoomed')
     
 
     # Cargar una imagen para volver atras
-    imagen = ctk.CTkImage(light_image=Image.open("./assets/volver.png"),
-                                  dark_image=Image.open("./assets/volver.png"),
-                                  size=(30, 30))
+    imagen = ctk.CTkImage(light_image=PIL.Image.open("./assets/volver.png"),
+                            dark_image=PIL.Image.open("./assets/volver.png"),
+                            size=(30, 30))
     
 
-    # Crear un botón con la imagen
+    img1=ImageTk.PhotoImage(PIL.Image.open("./assets/gym2.png"))
+
+
+    l1=customtkinter.CTkLabel(master=Cuotas,image=img1)
+    l1.pack()
     boton_con_imagen = ctk.CTkButton(Cuotas, image=imagen,text="Volver", command=lambda: (cambiarVentana(Cuotas, ventana_main)))
     boton_con_imagen.place(relx=0.03, rely=0.03)
     #FrameClientes
-    frame = customtkinter.CTkFrame(master=Cuotas, width=320, height=360, corner_radius=15)
+
+    frame = customtkinter.CTkFrame(master=Cuotas, width=600, height=700, corner_radius=15)
     frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+
 
     #LABEL TITULO
     label_titulo = customtkinter.CTkLabel(master=frame, text="PAGO DE CUOTA", font=('Century Gothic',20))
-    label_titulo.place(relx=0.26, rely=0.1)
+    label_titulo.place(relx=0.36, rely=0.1)
 
     #Entradas
     label_cliente = customtkinter.CTkLabel(master=frame, text="Cliente", font=('Century Gothic',15))
-    label_cliente.place(relx=0.32, rely=0.2)
-    entry_cliente = customtkinter.CTkEntry(master=frame, width=120, height=25, corner_radius=10)
-    entry_cliente.place(relx=0.5, rely=0.3, anchor=tk.CENTER)
+    label_cliente.place(relx=0.45, rely=0.2)
+    entry_cliente = customtkinter.CTkEntry(master=frame, width=220, height=25, corner_radius=10)
+    entry_cliente.place(relx=0.5, rely=0.26, anchor=tk.CENTER)
 
-    label_programa = customtkinter.CTkLabel(master=frame, text="programa", font=('Century Gothic',15))
-    label_programa.place(relx=0.32, rely=0.35)
-    entry_programa = customtkinter.CTkEntry(master=frame, width=120, height=25, corner_radius=10)
-    entry_programa.place(relx=0.5, rely=0.45, anchor=tk.CENTER)
+    label_programa = customtkinter.CTkLabel(master=frame, text="Programa", font=('Century Gothic',15))
+    label_programa.place(relx=0.44, rely=0.3)
+    entry_programa = customtkinter.CTkEntry(master=frame, width=220, height=25, corner_radius=10)
+    entry_programa.place(relx=0.5, rely=0.36, anchor=tk.CENTER)
 
-    label_pago = customtkinter.CTkLabel(master=frame, text="pago", font=('Century Gothic',15))
-    label_pago.place(relx=0.32, rely=0.5)
+    label_pago = customtkinter.CTkLabel(master=frame, text="Pago $", font=('Century Gothic',15))
+    label_pago.place(relx=0.44, rely=0.4)
     entry_pago = customtkinter.CTkEntry(master=frame, width=120, height=25, corner_radius=10)
-    entry_pago.place(relx=0.5, rely=0.6, anchor=tk.CENTER)
+    entry_pago.place(relx=0.5, rely=0.46, anchor=tk.CENTER)
 
-    label_profesor = customtkinter.CTkLabel(master=frame, text="profesor", font=('Century Gothic',15))
-    label_profesor.place(relx=0.32, rely=0.65)
-    entry_profesor = customtkinter.CTkEntry(master=frame, width=120, height=25, corner_radius=10)
-    entry_profesor.place(relx=0.5, rely=0.75, anchor=tk.CENTER)
+    label_profesor = customtkinter.CTkLabel(master=frame, text="Profesor", font=('Century Gothic',15))
+    label_profesor.place(relx=0.44, rely=0.5)
+    entry_profesor = customtkinter.CTkEntry(master=frame, width=220, height=25, corner_radius=10)
+    entry_profesor.place(relx=0.5, rely=0.56, anchor=tk.CENTER)
     
-    #boton confirmar
+    label_fecha= customtkinter.CTkLabel(master=frame, text="Fecha", font=('Century Gothic',15)) 
+    label_fecha.place(relx=0.45, rely=0.6)
+    frameCalendario = customtkinter.CTkFrame(master=frame, width=300, height=300)
+    frameCalendario.place(relx=0.5, rely=0.75, anchor=tk.CENTER)
+    
+    # Crear un objeto Calendar
+    cal = Calendar(frameCalendario, selectmode="day", year=2023, month=10, day=23)
+
+    # Colocar los widgets en la ventana
+    cal.pack(pady=10)
+
+
+    
     button_confirmar = customtkinter.CTkButton(
         master=frame,
         width=220,
         text="Confirmar",
-        command=lambda: print(
-            "Cliente:", entry_cliente.get(),
-            "Programa:", entry_programa.get(),
-            "Pago:", entry_pago.get(),
-            "Profesor:", entry_profesor.get()
-        ),
+        command=lambda: registrarPago([entry_cliente.get(), entry_pago.get(), entry_programa.get(), entry_profesor.get(), cal.get_date()]),
+            
         corner_radius=6
     )
-    button_confirmar.place(relx=0.18, rely=0.85)
+    button_confirmar.place(relx=0.33, rely=0.9)
 
     Cuotas.mainloop()
 
@@ -515,13 +565,14 @@ def button_function():
 
 
 def ventana_main():
-    app = customtkinter.CTk()  #creating cutstom tkinter window
-    app.geometry("800x440")
+    app = tk.Tk()  #creating cutstom tkinter window
+
     app.title('SALUD INTEGRAL')
     app.iconbitmap("./assets/logo.ico")
-    img1=ImageTk.PhotoImage(Image.open("./assets/gym1.jpg"))
+    app.state('zoomed')
+    img1=ImageTk.PhotoImage(PIL.Image.open("./assets/gym2.png"))
 
-
+    
     l1=customtkinter.CTkLabel(master=app,image=img1)
     l1.pack()
 
@@ -529,23 +580,22 @@ def ventana_main():
     frame=customtkinter.CTkFrame(master=l1, width=320, height=360, corner_radius=15)
     frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
-    l2=customtkinter.CTkLabel(master=frame, text="Bienvenido",font=('Century Gothic',20))
+    l2=customtkinter.CTkLabel(master=frame, text="Welcome",font=('Century Gothic',20))
     l2.place(x=50, y=45)
 
         #Botones
-    button_Clientes = customtkinter.CTkButton(master=frame, width=220, text="Clientes", command=lambda: (cambiarVentana(app, ventana_clientes)), corner_radius=6)#clientes
+    button_Clientes = customtkinter.CTkButton(master=frame, width=220, text="Customer", command=lambda: (cambiarVentana(app, ventana_clientes)), corner_radius=6)#clientes
     button_Clientes.place(x=50, y=110)
 
 
-    button_pagoCuota = customtkinter.CTkButton(master=frame, width=220, text="Pago Cuota", command=lambda: (cambiarVentana(app, ventana_pagoCuota)), corner_radius=6)#pago cuota
+    button_pagoCuota = customtkinter.CTkButton(master=frame, width=220, text="Payment", command=lambda: (cambiarVentana(app, ventana_pagoCuota)), corner_radius=6)#pago cuota
     button_pagoCuota.place(x=50, y=165)
 
-    button_programa = customtkinter.CTkButton(master=frame, width=220, text="Programa", command=lambda: (cambiarVentana(app, ventana_Programa)), corner_radius=6)
-    button_programa.place(x=50, y=220) 
-    button_cerrar= customtkinter.CTkButton(master=frame, width=100, height=20,text="Cerrar", command=lambda: (app.destroy()), compound="left", fg_color='white', text_color='black', hover_color='#AFAFAF')
-    button_cerrar.place(x=170, y=290)
 
-        # You can easily integrate authentication system 
+    button_cerrar= customtkinter.CTkButton(master=frame, width=100, height=20,text="Close this", command=lambda: (app.destroy()), compound="left", fg_color='white', text_color='black', hover_color='#AFAFAF')
+    button_cerrar.place(x=110, y=220)
+
+
     app.mainloop()
 
 ventana_main()
