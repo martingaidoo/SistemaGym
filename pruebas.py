@@ -37,25 +37,27 @@ class VentanaPrincipal(tk.Tk):
 # Inicializar todos los frames (uno para cada menú)
         self.frame_menu = customtkinter.CTkFrame(self)
         self.frame_clientes = customtkinter.CTkFrame(self)
+        self.frame_pagos = customtkinter.CTkFrame(self)
         self.frame_pagoCuota = customtkinter.CTkFrame(self)
         self.frame_registrarCliente = customtkinter.CTkFrame(self)
         self.frame_actualizarClientes = customtkinter.CTkFrame(self)
+        self.frame_actualizarPrecio = customtkinter.CTkFrame(self)
 
 # Llenar el menú
         frame = customtkinter.CTkFrame(self.frame_menu, width=320, height=360, corner_radius=15)
         frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
-        l2 = customtkinter.CTkLabel(self.frame_menu, text="Welcome", font=('Century Gothic', 20))
+        l2 = customtkinter.CTkLabel(self.frame_menu, text="Bienvenido", font=('Century Gothic', 20))
         l2.pack(pady=10)
 
         # Botones
-        button_Clientes = customtkinter.CTkButton(master=self.frame_menu, width=220, text="Customer", command=self.mostrar_clientes, corner_radius=6)
+        button_Clientes = customtkinter.CTkButton(master=self.frame_menu, width=220, text="Clientes", command=lambda:(self.frame_clientes.pack(),self.frame_menu.pack_forget()), corner_radius=6)
         button_Clientes.pack(pady=10)
 
-        button_pagoCuota = customtkinter.CTkButton(master=self.frame_menu, width=220, text="Payment", command=self.mostrar_pagoCuota, corner_radius=6)
+        button_pagoCuota = customtkinter.CTkButton(master=self.frame_menu, width=220, text="Pagos", command=lambda:(self.frame_pagos.pack(),self.frame_menu.pack_forget()), corner_radius=6)
         button_pagoCuota.pack(pady=10)
 
-        button_cerrar = customtkinter.CTkButton(master=self.frame_menu, width=100, height=20, text="Close this", command=self.destroy, compound="left", fg_color='white', text_color='black', hover_color='#AFAFAF')
+        button_cerrar = customtkinter.CTkButton(master=self.frame_menu, width=100, height=20, text="Cerrar", command=self.destroy, compound="left", fg_color='white', text_color='black', hover_color='#AFAFAF')
         button_cerrar.pack(pady=10)
 
 # Llenar clientes
@@ -82,6 +84,29 @@ class VentanaPrincipal(tk.Tk):
         button_consultarCliente = customtkinter.CTkButton(self.frame_clientes, width=220, text="CONSULTAR CLIENTE", command=lambda: cambiarVentana(clientes, ventana_RegistrarCliente), corner_radius=6)
         button_consultarCliente.place(x=50, y=220)
 
+#Llenar pagos
+        frame = customtkinter.CTkFrame(master=self.frame_pagos, width=320, height=360, corner_radius=15, border_width=12, border_color="black")
+        frame.pack(pady=10)
+
+    # Cargar una imagen para volver atras
+        imagen = ctk.CTkImage(light_image=PIL.Image.open("./assets/volver.png"),
+                                dark_image=PIL.Image.open("./assets/volver.png"),
+                                size=(30, 30))
+        boton_con_imagen = ctk.CTkButton(self.frame_pagos, image=imagen,text="Volver", command=lambda:(self.frame_menu.pack(),self.frame_pagos.pack_forget()))
+        boton_con_imagen.place(relx=0.03, rely=0.03)
+
+        # Mensaje
+        msjPrincipal = customtkinter.CTkLabel(self.frame_pagos, text="PAGOS", font=('Century Gothic', 20))
+        msjPrincipal.place(x=50, y=45)
+
+        button_registrarCliente = customtkinter.CTkButton(self.frame_pagos, width=220, text="PAGO DE CUOTA", command=lambda: (self.frame_pagos.pack_forget(),self.frame_pagoCuota.pack()), corner_radius=6)
+        button_registrarCliente.place(x=50, y=110)
+
+        button_actualizarCliente = customtkinter.CTkButton(self.frame_pagos, width=220, text="ACTUALIZAR PLANES", command=lambda: (self.frame_pagos.pack_forget(),self.frame_actualizarPrecio.pack()), corner_radius=6)
+        button_actualizarCliente.place(x=50, y=165)
+
+        button_consultarCliente = customtkinter.CTkButton(self.frame_pagos, width=220, text="ASISTENCIAS", command=lambda: cambiarVentana(clientes, ventana_RegistrarCliente), corner_radius=6)
+        button_consultarCliente.place(x=50, y=220)
 
 # llenar pagoCuota
         frame = customtkinter.CTkFrame(self.frame_pagoCuota, width=600, height=700, corner_radius=15)
@@ -91,7 +116,7 @@ class VentanaPrincipal(tk.Tk):
         imagen = ctk.CTkImage(light_image=PIL.Image.open("./assets/volver.png"),
                                 dark_image=PIL.Image.open("./assets/volver.png"),
                                 size=(30, 30))
-        boton_con_imagen = ctk.CTkButton(self.frame_pagoCuota, image=imagen,text="Volver", command=lambda:(self.frame_menu.pack(),self.frame_pagoCuota.pack_forget()))
+        boton_con_imagen = ctk.CTkButton(self.frame_pagoCuota, image=imagen,text="Volver", command=lambda:(self.frame_pagos.pack(),self.frame_pagoCuota.pack_forget()))
         boton_con_imagen.place(relx=0.03, rely=0.03)
 
     #LABEL TITULO
@@ -201,7 +226,6 @@ class VentanaPrincipal(tk.Tk):
         button_confirmar.place(relx=0.18, rely=0.90)
 
 # Llenar el menu actualizar cliente
-
         class ProgramaABM_Clientes:
             def __init__(self, frame):
                 self.frame = frame
@@ -344,25 +368,100 @@ class VentanaPrincipal(tk.Tk):
 
         ProgramaABM_Clientes(frame)
 
+#llenar actualizar planes
+        class ProgramaABM:
+            def __init__(self, frame):
+                self.frame = frame
+
+                # Conectarse a la base de datos SQLite
+                self.conexion = sqlite3.connect("BaseDatos.db")
+                self.cursor = self.conexion.cursor()
+                self.conexion.commit()
+
+                # Crear etiquetas y campos de entrada
+                self.label_nombre = customtkinter.CTkLabel(frame, text="Nombre:")
+                self.label_nombre.grid(row=1, column=0)
+                self.nombre_entry = customtkinter.CTkEntry(frame)
+                self.nombre_entry.grid(row=1, column=1)
+
+                self.label_precio = customtkinter.CTkLabel(frame, text="Precio:")
+                self.label_precio.grid(row=2, column=0)
+                self.precio_entry = customtkinter.CTkEntry(frame)
+                self.precio_entry.grid(row=2, column=1)
+
+                # Crear botones
+                self.btn_agregar = customtkinter.CTkButton(frame, text="Agregar", command=self.agregar)
+                self.btn_agregar.grid(row=3, column=0)
+
+                self.btn_actualizar = customtkinter.CTkButton(frame, text="Actualizar", command=self.actualizar)
+                self.btn_actualizar.grid(row=3, column=1)
+
+                # Crear una lista para mostrar los datos de la base de datos
+                self.lista_programas = tk.Listbox(frame)
+                self.lista_programas.grid(row=4, column=0, columnspan=2)
+                self.mostrar_programas()
+
+                # Asignar una función para manejar la selección en la lista
+                self.lista_programas.bind('<<ListboxSelect>>', self.seleccionar_programa)
+
+            def mostrar_programas(self):
+                self.lista_programas.delete(0, tk.END)
+                programas = self.cursor.execute('SELECT * FROM Programa').fetchall()
+                for programa in programas:
+                    _, _, precio, nombre = programa  # Obtener los dos últimos elementos de la tupla
+                    self.lista_programas.insert(tk.END, (precio, nombre))
+
+            def agregar(self):
+                nombre = self.nombre_entry.get()
+                precio = self.precio_entry.get()
+                if nombre and precio:
+                    self.cursor.execute("INSERT INTO Programa (Plan, Precio, Nombre) VALUES (?, ?, ?)",
+                                        (0, precio, nombre))
+                    self.conexion.commit()
+                    self.mostrar_programas()
+                    self.limpiar_campos()
+
+            def actualizar(self):
+                nombre = self.nombre_entry.get()
+                precio = self.precio_entry.get()
+                if nombre and precio:
+                    self.cursor.execute("UPDATE Programa SET Precio=? WHERE Nombre=?", (precio, nombre))
+                    self.conexion.commit()
+                    self.mostrar_programas()
+                    self.limpiar_campos()
+
+            def seleccionar_programa(self, event):
+                programa = self.lista_programas.get(self.lista_programas.curselection())
+                precio, nombre = programa
+                self.nombre_entry.delete(0, tk.END)
+                self.nombre_entry.insert(0, nombre)
+                self.precio_entry.delete(0, tk.END)
+                self.precio_entry.insert(0, precio)
+
+            def limpiar_campos(self):
+                self.nombre_entry.delete(0, tk.END)
+                self.precio_entry.delete(0, tk.END)
+
+            def __del__(self):
+                self.conexion.close()
+
+        frame=customtkinter.CTkFrame(self.frame_actualizarPrecio, width=800, height=600, corner_radius=15)
+        frame.pack(pady=10)
+
+        # Cargar una imagen para volver atras
+        imagen = ctk.CTkImage(light_image=PIL.Image.open("./assets/volver.png"),
+                                dark_image=PIL.Image.open("./assets/volver.png"),
+                                size=(30, 30))
+        
+        boton_con_imagen = ctk.CTkButton(master=self.frame_actualizarPrecio, image=imagen,text="Volver", command=lambda:(self.frame_pagos.pack(),self.frame_actualizarPrecio.pack_forget()))
+        boton_con_imagen.pack(pady=10)
+
+        ProgramaABM(frame)
+
 
 
         # Mostrar el primer menú al inicio
         self.frame_menu.pack()
-
-
-    def mostrar_menu(self):
-        # Mostrar el primer menú y ocultar el segundo
-        self.frame_menu.pack()
-        self.frame_clientes.pack_forget()
-
-    def mostrar_clientes(self):
-        # Mostrar el segundo menú y ocultar el primero
-        self.frame_menu.pack_forget()
-        self.frame_clientes.pack()
-
-    def mostrar_pagoCuota(self):
-        self.frame_menu.pack_forget()
-        self.frame_pagoCuota.pack()
 
 if __name__ == "__main__":
     app = VentanaPrincipal()
