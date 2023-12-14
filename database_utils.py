@@ -25,3 +25,20 @@ def agregar_cliente(cliente_data):
             conn.rollback()
         finally:
             conn.close()
+def registrarPago(data):
+    # Conectar a la base de datos SQLite (asegúrate de que la base de datos exista)
+    mixconexion = sqlite3.connect("BaseDatos.db")
+    cursor = mixconexion.cursor()
+    # Obtener los datos del cliente
+    Nombre, Haber, PLAN, PROFESOR, fecha= data
+    # Verificar que ningún dato esté vacío
+    if Nombre and Haber and PLAN and PROFESOR and fecha:
+        try:
+            # Insertar los datos en la tabla
+            cursor.execute("INSERT INTO Cuotas (Nombre, Haber, PLAN, PROFESOR, fecha) VALUES (?, ?, ?, ?, ?)", (Nombre, Haber, PLAN, PROFESOR, fecha))
+            # Confirmar la transacción
+            mixconexion.commit()
+        except sqlite3.Error as ex:
+            mixconexion.rollback()
+        finally:
+            mixconexion.close()
