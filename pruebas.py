@@ -106,7 +106,7 @@ class VentanaPrincipal(tk.Tk):
         
 
 #llenar asistencia
-        frame = customtkinter.CTkFrame(self.frame_asistencia, width=320, height=360)
+        frame = customtkinter.CTkFrame(self.frame_asistencia, width=800, height=600)
         frame.pack(pady=0)
         imagen = ctk.CTkImage(light_image=PIL.Image.open("./assets/volver.png"),
                                 dark_image=PIL.Image.open("./assets/volver.png"),
@@ -114,18 +114,18 @@ class VentanaPrincipal(tk.Tk):
         boton_con_imagen = ctk.CTkButton(self.frame_asistencia, image=imagen,text="Volver", command=lambda:(self.frame_pagos.pack(pady=60),self.frame_asistencia.pack_forget()))
         boton_con_imagen.place(relx=0.03, rely=0.03)
 
-        label_titulo = customtkinter.CTkLabel(frame, text="ASISTENCIA", font=('Century Gothic',20))
-        label_titulo.place(relx=0.3, rely=0.2)
+        label_titulo = customtkinter.CTkLabel(frame, text="CONTROL DE ACCESO", font=('Century Gothic',30))
+        label_titulo.place(relx=0.34, rely=0.1)
         label_titulo = customtkinter.CTkLabel(frame, text="Documente:", font=('Century Gothic',15))
-        label_titulo.place(relx=0.3, rely=0.4)
+        label_titulo.place(relx=0.34, rely=0.2)
         
         entry_asistencia = customtkinter.CTkEntry(self.frame_asistencia,
-                                    width=120,
+                                    width=200,
                                     height=25,
                                     corner_radius=10)
-        entry_asistencia.place(relx=0.3, rely=0.5)
-        button = customtkinter.CTkButton(self.frame_asistencia, width=220, text="confirmar", command=lambda: (registrarAsistencia(obtener_datos_cliente(entry_asistencia.get())),entry_asistencia.delete(0, tk.END)), corner_radius=6)
-        button.place(x=50, y=220)
+        entry_asistencia.place(relx=0.48, rely=0.2)
+        button = customtkinter.CTkButton(self.frame_asistencia, width=220, text="CONFIRMAR", command=lambda: (registrarAsistencia(obtener_datos_cliente(entry_asistencia.get())),entry_asistencia.delete(0, tk.END)), corner_radius=6)
+        button.place(x=330, y=165)
         #hace lo mismo que apretar el boton
         def funcion_al_presionar_tecla(event):
             if entry_asistencia.get() != "":
@@ -501,8 +501,8 @@ class VentanaPrincipal(tk.Tk):
                 telefono = self.Telefono_entry.get()
 
                 if apellido and nombre and correo and documento and fechaNacimiento and telefono:
-                    self.cursor.execute("UPDATE Clientes SET Apellido=?, Nombre=?, Correo=?, Documento=?, Fecha_Nacimiento=? WHERE Telefono=?",
-                                        (apellido, nombre, correo, documento, fechaNacimiento, telefono))
+                    self.cursor.execute("UPDATE Clientes SET Apellido=?, Nombre=?, Correo=?, Telefono=?, Fecha_Nacimiento=? WHERE Documento=?",
+                                        (apellido, nombre, correo, telefono, fechaNacimiento, documento))
                     self.conexion.commit()
                     self.mostrar_programas()
                     self.limpiar_campos()
