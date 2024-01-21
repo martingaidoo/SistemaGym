@@ -486,3 +486,90 @@ def actualizarPrecio(self):
                 self.conexion.close()
 
         ProgramaABM(self.frame_actualizarPrecio)
+
+
+def buscarCliente(self):
+    class CustomEntry(tk.Entry):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.bind("<KeyRelease>", self.actualizar_resultados)
+
+        def actualizar_resultados(self, event):
+            # Obtiene la entrada actual del cuadro de texto
+            entrada = self.get().lower()
+
+            # Filtra la lista de nombres y apellidos en función de la entrada
+            resultados_filtrados = [nombre_apellido for nombre_apellido in lista_nombres_apellidos if entrada in nombre_apellido.lower()]
+
+            # Borra los elementos actuales en la lista de resultados
+            lista_resultados.delete(0, tk.END)
+
+            # Agrega los nuevos resultados filtrados a la lista
+            for resultado in resultados_filtrados:
+                lista_resultados.insert(tk.END, resultado)
+
+            # Muestra u oculta la lista de resultados en función de si hay resultados
+            if not resultados_filtrados or self.entry.get() == "":
+                lista_resultados.pack_forget()
+                print("algo")
+            else:
+                lista_resultados.pack(pady=10)
+                # Ajusta la altura de la lista de resultados
+                lista_resultados.config(height=len(resultados_filtrados))
+                print("algo")
+
+    # Lista de nombres y apellidos (puedes cargarla desde una base de datos o cualquier otra fuente)
+    lista_nombres_apellidos = ["Juan Pérez", "María García", "Luis Rodríguez", "Ana Martínez", "Pedro López", "Laura Sánchez"]
+
+    # Crear un cuadro de entrada personalizado (CustomEntry)
+    self.entry = customtkinter.CTkEntry(self, placeholder_text="Input")
+    self.entry.grid(row=3, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew")
+    self.main_button_1 = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
+    self.main_button_1.grid(row=3, column=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
+
+    # Crear una lista para mostrar los resultados
+    lista_resultados = tk.Listbox(self)
+    CustomEntry(self)
+
+def mostrarResultados(self):
+    conexion = sqlite3.connect("BaseDatos.db")
+    cursor = conexion.cursor()
+
+    # Consultar la base de datos para obtener la lista
+    cursor.execute("SELECT Nombre || ' ' || Apellido || ' ' || Documento AS NombreCompleto FROM Clientes")
+    resultados = cursor.fetchall()
+    lista_resultante = [tupla[0] for tupla in resultados]
+
+    def actualizar_resultados():
+        # Obtiene la entrada actual del cuadro de texto
+        entrada = self.entry.get()
+        # Filtra la lista de nombres y apellidos en función de la entrada
+        resultados_filtrados = [nombre_apellido for nombre_apellido in lista_resultante if entrada in nombre_apellido.lower()]
+        resultados_filtrados = resultados_filtrados[:4]
+        # Borra los elementos actuales en la lista de resultados
+        lista_resultados.delete(0, tk.END)
+        # Agrega los nuevos resultados filtrados a la lista
+        for resultado in resultados_filtrados:
+            lista_resultados.insert(tk.END, resultado)
+        # Muestra u oculta la lista de resultados en función de si hay resultados
+        # Muestra u oculta la lista de resultados en función de si hay resultados
+        if not resultados_filtrados or self.entry.get() == "":
+            lista_resultados.grid_forget()  # Cambiado a grid_forget
+        else:
+            lista_resultados.grid(row=3, column=2, padx=(0, 0), pady=5, sticky="nsew")  # Cambiado a grid
+            # Ajusta la altura de la lista de resultados
+            lista_resultados.config(height=len(resultados_filtrados))
+        # Programa la próxima ejecución de la función después de 100 milisegundos
+        self.after(100, actualizar_resultados)
+    global lista_resultados
+    
+    # Crear una lista para mostrar los resultados
+    lista_resultados = tk.Listbox(self)
+    lista_resultados.config(width=20, height=5)  # Configurar el ancho y alto de la lista de resultados
+    # Crear un cuadro de entrada personalizado (CustomEntry)
+    self.entry = customtkinter.CTkEntry(self, placeholder_text="Input")
+    self.entry.grid(row=3, column=0, padx=(20, 20), pady=(20, 20), sticky="nsew")
+    self.main_button_1 = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
+    self.main_button_1.grid(row=3, column=1, padx=(20, 20), pady=(20, 20), sticky="nsew")
+    actualizar_resultados()
+    conexion.close()
