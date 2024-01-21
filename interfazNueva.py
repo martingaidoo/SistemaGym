@@ -77,48 +77,44 @@ class App(customtkinter.CTk):
         self.scaling_optionemenu.grid(row=12, column=0, padx=20, pady=(10, 20))
 
         # create main entry and button
-        self.entry = customtkinter.CTkEntry(self, placeholder_text="Input")
-        self.entry.grid(row=3, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew")
-
-        self.main_button_1 = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
-        self.main_button_1.grid(row=3, column=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
-
-
+        self.buscarFichas_frame = customtkinter.CTkFrame(self, width=140, corner_radius=6)
+        self.buscarFichas_frame.grid(row=3, column=1, columnspan=3, padx=(20, 0), pady=(10, 10), sticky="nsew")
+        mostrarResultados(self.buscarFichas_frame)
         # create tabview
         self.tabview = customtkinter.CTkTabview(self, width=250)
-        self.tabview.grid(row=0, column=3, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        self.tabview.add("Pestañas")
-        self.tabview.add("Pestaña 2")
-        self.tabview.add("Pestaña 3")
-        self.tabview.tab("Pestañas").grid_columnconfigure(0, weight=1)  # configure grid of individual tabs
-        self.tabview.tab("Pestaña 2").grid_columnconfigure(0, weight=1)
+        self.tabview.grid(row=1, column=3, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        self.tabview.add("opciones")
+        self.tabview.add("WhatsApp")
+        self.tabview.add("Configuracion")
+        self.tabview.tab("opciones").grid_columnconfigure(0, weight=1)  # configure grid of individual tabs
+        self.tabview.tab("WhatsApp").grid_columnconfigure(0, weight=1)
 
-        self.optionmenu_1 = customtkinter.CTkOptionMenu(self.tabview.tab("Pestañas"), dynamic_resizing=False,
+        self.optionmenu_1 = customtkinter.CTkOptionMenu(self.tabview.tab("opciones"), dynamic_resizing=False,
                                                         values=["Opcion 1", "Opcion 2", "Opcion 3"])
         self.optionmenu_1.grid(row=0, column=0, padx=20, pady=(20, 10))
-        self.combobox_1 = customtkinter.CTkComboBox(self.tabview.tab("Pestañas"),
+        self.combobox_1 = customtkinter.CTkComboBox(self.tabview.tab("opciones"),
                                                     values=["Opcion 1", "Opcion 2", "Opcio n3"])
         self.combobox_1.grid(row=1, column=0, padx=20, pady=(10, 10))
-        self.string_input_button = customtkinter.CTkButton(self.tabview.tab("Pestañas"), text="Cuadro de dialogo",
+        self.string_input_button = customtkinter.CTkButton(self.tabview.tab("opciones"), text="Cuadro de dialogo",
                                                             command=self.open_input_dialog_event)
         self.string_input_button.grid(row=2, column=0, padx=20, pady=(10, 10))
-        self.label_tab_2 = customtkinter.CTkLabel(self.tabview.tab("Pestaña 2"), text="Label Pestaña 2")
+        self.label_tab_2 = customtkinter.CTkLabel(self.tabview.tab("WhatsApp"), text="Label Pestaña 2")
         self.label_tab_2.grid(row=0, column=0, padx=20, pady=20)
 
         # create scrollable frame
-        self.scrollable_frame = customtkinter.CTkScrollableFrame(self, label_text="Barras")
-        self.scrollable_frame.grid(row=1, column=3, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        self.scrollable_frame = customtkinter.CTkScrollableFrame(self, label_text="Notificaciones")
+        self.scrollable_frame.grid(row=0, column=3, padx=(20, 0), pady=(20, 0), sticky="nsew")
         self.scrollable_frame.grid_columnconfigure(0, weight=1)
         self.scrollable_frame_switches = []
-        for i in range(100):
-            switch = customtkinter.CTkSwitch(master=self.scrollable_frame, text=f"Barra {i}")
-            switch.grid(row=i, column=0, padx=10, pady=(0, 20))
-            self.scrollable_frame_switches.append(switch)
+        #for i in range(100):
+            #switch = customtkinter.CTkSwitch(master=self.scrollable_frame, text=f"Barra {i}")
+            #switch.grid(row=i, column=0, padx=10, pady=(0, 20))
+            #self.scrollable_frame_switches.append(switch)
 
         # set default values
         self.sidebar_button_8.configure(state="disabled", text="Este boton no lo podes clickear")
-        self.scrollable_frame_switches[0].select()
-        self.scrollable_frame_switches[4].select()
+        #self.scrollable_frame_switches[0].select()
+        #self.scrollable_frame_switches[4].select()
         self.appearance_mode_optionemenu.set("Dark")
         self.scaling_optionemenu.set("100%")
         self.optionmenu_1.set("Menu")
@@ -134,7 +130,6 @@ class App(customtkinter.CTk):
     def change_scaling_event(self, new_scaling: str):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
         customtkinter.set_widget_scaling(new_scaling_float)
-
 
 if __name__ == "__main__":
     app = App()
