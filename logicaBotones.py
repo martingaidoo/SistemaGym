@@ -424,8 +424,12 @@ def pagoCuotas(self):
 
 
 def actualizarPrecio(self):
+    
         self.frame_actualizarPrecio = customtkinter.CTkFrame(self, width=250)
         self.frame_actualizarPrecio.grid(row=0, rowspan=2, column=1,columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        self.frame_actualizarPrecio.grid_columnconfigure((0,2), weight=1)
+        self.frame_actualizarPrecio.grid_columnconfigure(1, weight=0)
+        self.frame_actualizarPrecio.grid_rowconfigure((0, 1, 2), weight=0)
         class ProgramaABM:
             def __init__(self, frame):
                 self.frame = frame
@@ -584,9 +588,9 @@ def mostrarResultados(self):
     lista_resultados = tk.Listbox(self)
     lista_resultados.config(width=20, height=5)  # Configurar el ancho y alto de la lista de resultados
     # Crear un cuadro de entrada personalizado (CustomEntry)
-    self.entry = customtkinter.CTkEntry(self, placeholder_text="Input")
+    self.entry = customtkinter.CTkEntry(self, placeholder_text="buscar ficha")
     self.entry.grid(row=3, column=0, padx=(20, 20), pady=(20, 20), sticky="nsew")
-    self.main_button_1 = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
+    self.main_button_1 = customtkinter.CTkButton(master=self,text="Buscar", fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
     self.main_button_1.grid(row=3, column=1, padx=(20, 20), pady=(20, 20), sticky="nsew")
     actualizar_resultados()
     conexion.close()
