@@ -84,6 +84,7 @@ def registrarPago(data):
     mixconexion = sqlite3.connect("BaseDatos.db")
     cursor = mixconexion.cursor()
     # Obtener los datos del cliente
+    print(data)
     documento, Haber, Plan, Profesor= data
     cobro = Haber
 

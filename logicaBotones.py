@@ -27,18 +27,22 @@ banderaVencimiento = False
 def controlAcceso(self):
         self.frame_asistencia = customtkinter.CTkFrame(self, width=250)
         self.frame_asistencia.grid(row=0, rowspan=2, column=1,columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        self.frame_asistencia.grid_columnconfigure((0,2), weight=1)
+        self.frame_asistencia.grid_columnconfigure(1, weight=0)
+        self.frame_asistencia.grid_rowconfigure((0, 1, 2), weight=0)
+        
         label_titulo = customtkinter.CTkLabel(self.frame_asistencia, text="CONTROL DE ACCESO", font=('Century Gothic',30))
-        label_titulo.place(relx=0.34, rely=0.1)
-        label_titulo = customtkinter.CTkLabel(self.frame_asistencia, text="Documente:", font=('Century Gothic',15))
-        label_titulo.place(relx=0.34, rely=0.2)
+        label_titulo.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        label_documento = customtkinter.CTkLabel(self.frame_asistencia, text="Documente:", font=('Century Gothic',15))
+        label_documento.grid(row=1, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
         
         entry_asistencia = customtkinter.CTkEntry(self.frame_asistencia,
                                     width=200,
                                     height=25,
                                     corner_radius=10)
-        entry_asistencia.place(relx=0.48, rely=0.2)
+        entry_asistencia.grid(row=2, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
         button = customtkinter.CTkButton(self.frame_asistencia, width=220, text="CONFIRMAR", command=lambda: (registrarAsistencia(obtener_datos_cliente(entry_asistencia.get())),entry_asistencia.delete(0, tk.END)), corner_radius=6)
-        button.place(x=330, y=165)
+        button.grid(row=3, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
         #hace lo mismo que apretar el boton
 
         def funcion_al_presionar_tecla(event):
@@ -50,41 +54,43 @@ def controlAcceso(self):
 def registrarCliente(self):
         self.frame_registrarCliente = customtkinter.CTkFrame(self, width=250)
         self.frame_registrarCliente.grid(row=0, rowspan=2, column=1,columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        self.frame_registrarCliente.grid_columnconfigure((0,2), weight=1)
+        self.frame_registrarCliente.grid_columnconfigure(1, weight=0)
         #LABEL TITULO
         label_titulo = customtkinter.CTkLabel(self.frame_registrarCliente, text="Registrar clientes", font=('Century Gothic',20))
-        label_titulo.place(relx=0.26, rely=0.03)
+        label_titulo.grid(row=0, column=1, padx=(20, 0), pady=(5, 0), sticky="nsew")
 
         #Entradas
         label_nombre = customtkinter.CTkLabel(self.frame_registrarCliente, text="Nombre", font=('Century Gothic',15))
-        label_nombre.place(relx=0.32, rely=0.1)
+        label_nombre.grid(row=1, column=1, padx=(20, 0), pady=(5, 0), sticky="nsew")
         entry_nombre = customtkinter.CTkEntry(self.frame_registrarCliente, width=120, height=25, corner_radius=10)
-        entry_nombre.place(relx=0.5, rely=0.16, anchor=tk.CENTER)
+        entry_nombre.grid(row=2, column=1, padx=(20, 0), pady=(5, 0), sticky="nsew")
 
         label_apellido = customtkinter.CTkLabel(self.frame_registrarCliente, text="Apellido", font=('Century Gothic',15))
-        label_apellido.place(relx=0.32, rely=0.2)
+        label_apellido.grid(row=3, column=1, padx=(20, 0), pady=(5, 0), sticky="nsew")
         entry_apellido = customtkinter.CTkEntry(self.frame_registrarCliente, width=120, height=25, corner_radius=10)
-        entry_apellido.place(relx=0.5, rely=0.26, anchor=tk.CENTER)
+        entry_apellido.grid(row=4, column=1, padx=(20, 0), pady=(5, 0), sticky="nsew")
 
         label_documento = customtkinter.CTkLabel(self.frame_registrarCliente, text="Documento", font=('Century Gothic',15))
-        label_documento.place(relx=0.32, rely=0.3)
+        label_documento.grid(row=5, column=1, padx=(20, 0), pady=(5, 0), sticky="nsew")
         entry_documento = customtkinter.CTkEntry(self.frame_registrarCliente, width=120, height=25, corner_radius=10)
-        entry_documento.place(relx=0.5, rely=0.36, anchor=tk.CENTER)
+        entry_documento.grid(row=6, column=1, padx=(20, 0), pady=(5, 0), sticky="nsew")
 
         label_correo = customtkinter.CTkLabel(self.frame_registrarCliente, text="Correo", font=('Century Gothic',15))
-        label_correo.place(relx=0.32, rely=0.4)
+        label_correo.grid(row=7, column=1, padx=(20, 0), pady=(5, 0), sticky="nsew")
         entry_correo = customtkinter.CTkEntry(self.frame_registrarCliente, width=120, height=25, corner_radius=10)
-        entry_correo.place(relx=0.5, rely=0.46, anchor=tk.CENTER)
+        entry_correo.grid(row=8, column=1, padx=(20, 0), pady=(5, 0), sticky="nsew")
 
         label_telefono = customtkinter.CTkLabel(self.frame_registrarCliente, text="Telefono", font=('Century Gothic',15))
-        label_telefono.place(relx=0.32, rely=0.5)
+        label_telefono.grid(row=9, column=1, padx=(20, 0), pady=(5, 0), sticky="nsew")
         entry_telefono = customtkinter.CTkEntry(self.frame_registrarCliente, width=120, height=25, corner_radius=10)
-        entry_telefono.place(relx=0.5, rely=0.56, anchor=tk.CENTER)
+        entry_telefono.grid(row=10, column=1, padx=(20, 0), pady=(5, 0), sticky="nsew")
 
         label_fechaNacimiento = customtkinter.CTkLabel(self.frame_registrarCliente, text="Fecha de nacimiento", font=('Century Gothic',15)) # se ingresa ejemplo "año-mes-dia"
-        label_fechaNacimiento.place(relx=0.32, rely=0.58)
+        label_fechaNacimiento.grid(row=11, column=1, padx=(20, 0), pady=(5, 0), sticky="nsew")
 
         frameCalendario = customtkinter.CTkFrame(master=self.frame_registrarCliente, width=300, height=300)
-        frameCalendario.place(relx=0.5, rely=0.75, anchor=tk.CENTER)
+        frameCalendario.grid(row=12, column=1, padx=(20, 0), pady=(5, 0), sticky="nsew")
         
         # Crear un objeto Calendar
         cal = Calendar(frameCalendario, selectmode="day", year=2023, month=10, day=23)
@@ -100,11 +106,14 @@ def registrarCliente(self):
             command=lambda: (agregar_cliente([entry_nombre.get(),entry_apellido.get(), entry_correo.get(), entry_documento.get(), cal.get_date(), entry_telefono.get()]),self.frame_pagoCuota.pack(pady=60),self.frame_registrarCliente.pack_forget()),
             corner_radius=6
         )
-        button_confirmar.place(relx=0.35, rely=0.90)
+        button_confirmar.grid(row=13, column=1, padx=(20, 0), pady=(5, 0), sticky="nsew")
 
 def actualizarClientes(self):
         self.frame_actualizarClientes = customtkinter.CTkFrame(self, width=250)
         self.frame_actualizarClientes.grid(row=0, rowspan=2, column=1,columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        self.frame_actualizarClientes.grid_columnconfigure((0,2), weight=1)
+        self.frame_actualizarClientes.grid_columnconfigure(1, weight=0)
+        self.frame_actualizarClientes.grid_rowconfigure((5), weight=1)
         class ProgramaABM_Clientes:
             def __init__(self, frame):
                 self.frame = frame
@@ -215,6 +224,9 @@ def actualizarClientes(self):
 def consultarCuotas(self):      
         self.frame_consultarCuotas = customtkinter.CTkFrame(self, width=250)
         self.frame_consultarCuotas.grid(row=0, rowspan=2, column=1,columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        self.frame_consultarCuotas.grid_columnconfigure((0,2), weight=1)
+        self.frame_consultarCuotas.grid_columnconfigure(1, weight=0)
+        self.frame_consultarCuotas.grid_rowconfigure((5), weight=1)
         class ProgramaABM_cuotas:
             
             def __init__(self, frame):
@@ -261,7 +273,7 @@ def consultarCuotas(self):
                 self.btn_actualizar.grid(row=4, column=2)
 
                 self.btn_vencido = ctk.CTkButton(frame, text="Vencido", command=lambda: (self.mostrar_programas(), cambiar()))
-                self.btn_vencido.grid(row=4, column=1)
+                self.btn_vencido.grid(row=4, column=0)
 
                 # Crear una lista para mostrar los datos de la base de datos
                 self.lista_programas = tk.Listbox(frame)
@@ -354,56 +366,61 @@ def consultarCuotas(self):
 def pagoCuotas(self):
         self.frame_pagoCuota = customtkinter.CTkFrame(self, width=250)
         self.frame_pagoCuota.grid(row=0, rowspan=2, column=1,columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        self.frame_pagoCuota.grid_columnconfigure((0,2), weight=1)
+        self.frame_pagoCuota.grid_columnconfigure(1, weight=0)
+        self.frame_pagoCuota.grid_rowconfigure((0, 1, 2), weight=0)
 
     #LABEL TITULO
         label_titulo = customtkinter.CTkLabel(self.frame_pagoCuota, text="PAGO DE CUOTA", font=('Century Gothic',20))
-        label_titulo.place(relx=0.34, rely=0.1)
+        label_titulo.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
 
         #Entradas
         label_cliente = customtkinter.CTkLabel(self.frame_pagoCuota, text="documento", font=('Century Gothic',15))
-        label_cliente.place(relx=0.40, rely=0.2)
+        label_cliente.grid(row=1, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
 
         entry_cliente = customtkinter.CTkEntry(self.frame_pagoCuota, width=220, height=25, corner_radius=10)
-        entry_cliente.place(relx=0.5, rely=0.26, anchor=tk.CENTER)
+        entry_cliente.grid(row=2, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
 
         label_programa = customtkinter.CTkLabel(self.frame_pagoCuota, text="Programa", font=('Century Gothic',15))
-        label_programa.place(relx=0.44, rely=0.35)
+        label_programa.grid(row=3, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
 
         conexion = sqlite3.connect('BaseDatos.db')
         cursor = conexion.cursor()
 
-        menu_desplegable = ttk.Combobox(self.frame_pagoCuota, width=35, height=25)
+        
+        
+        
+        #menu_desplegable = ttk.Combobox(self.frame_pagoCuota, width=35, height=25)
 
         # Obtener los nombres de los clientes desde la base de datos
         cursor.execute("SELECT Nombre FROM Programa")
         nombres = cursor.fetchall()
+        lista_nombres = [tupla[0] for tupla in nombres]
 
         # Agregar los nombres al menú desplegable
-        menu_desplegable['values'] = nombres
-
-        #nombre_seleccionado = menu_desplegable.get()
+        menu_desplegable = customtkinter.CTkComboBox(self.frame_pagoCuota, values=lista_nombres, variable="")
 
         # Mostrar el menú desplegable
-        menu_desplegable.place(relx=0.23, rely=0.4)
+        menu_desplegable.grid(row=4, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
 
 
         label_pago = customtkinter.CTkLabel(self.frame_pagoCuota, text="Pago $", font=('Century Gothic',15))
-        label_pago.place(relx=0.44, rely=0.5)
+        label_pago.grid(row=5, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
         entry_pago = customtkinter.CTkEntry(self.frame_pagoCuota, width=120, height=25, corner_radius=10)
-        entry_pago.place(relx=0.5, rely=0.56, anchor=tk.CENTER)
+        entry_pago.grid(row=6, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
 
         label_profesor = customtkinter.CTkLabel(self.frame_pagoCuota, text="Profesor", font=('Century Gothic',15))
-        label_profesor.place(relx=0.44, rely=0.64)
+        label_profesor.grid(row=7, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
         entry_profesor = customtkinter.CTkEntry(self.frame_pagoCuota, width=220, height=25, corner_radius=10)
-        entry_profesor.place(relx=0.5, rely=0.7, anchor=tk.CENTER)
+        entry_profesor.grid(row=8, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
 
         
         button_confirmar = customtkinter.CTkButton(
             self.frame_pagoCuota,
             width=220,
             text="Confirmar",
-            command=lambda: (registrarPago([entry_cliente.get(), entry_pago.get(), menu_desplegable.get()[1:len(menu_desplegable.get())-1], entry_profesor.get()]), self.frame_pagos.pack(pady=60),self.frame_pagoCuota.pack_forget()),corner_radius=6)
-        button_confirmar.place(relx=0.25, rely=0.9)
+            command=lambda: (registrarPago([entry_cliente.get(), entry_pago.get(), menu_desplegable.get(), entry_profesor.get()]), self.frame_pagos.pack(pady=60),self.frame_pagoCuota.pack_forget()),corner_radius=6)
+        button_confirmar.grid(row=9, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
 
 
 def actualizarPrecio(self):
