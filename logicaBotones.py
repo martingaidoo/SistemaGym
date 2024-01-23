@@ -27,27 +27,27 @@ banderaVencimiento = False
 def controlAcceso(self):
         self.frame_asistencia = customtkinter.CTkFrame(self, width=250)
         self.frame_asistencia.grid(row=0, rowspan=2, column=1,columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        self.frame_asistencia.grid_columnconfigure((0,2), weight=1)
+        self.frame_asistencia.grid_columnconfigure((0,2), weight=2)
         self.frame_asistencia.grid_columnconfigure(1, weight=0)
-        self.frame_asistencia.grid_rowconfigure((0, 1, 2), weight=0)
+        self.frame_asistencia.grid_rowconfigure((0, 1,2,3,4), weight=0)
         
         label_titulo = customtkinter.CTkLabel(self.frame_asistencia, text="CONTROL DE ACCESO", font=('Century Gothic',30))
-        label_titulo.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        label_titulo.grid(row=0, column=1, pady=(20, 0), sticky="nsew")
         label_documento = customtkinter.CTkLabel(self.frame_asistencia, text="Documente:", font=('Century Gothic',15))
-        label_documento.grid(row=1, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        label_documento.grid(row=1, column=1, pady=(20, 0), sticky="nsew")
         
         entry_asistencia = customtkinter.CTkEntry(self.frame_asistencia,
-                                    width=200,
+                                    width=500,
                                     height=25,
                                     corner_radius=10)
-        entry_asistencia.grid(row=2, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        button = customtkinter.CTkButton(self.frame_asistencia, width=220, text="CONFIRMAR", command=lambda: (registrarAsistencia(obtener_datos_cliente(entry_asistencia.get())),entry_asistencia.delete(0, tk.END)), corner_radius=6)
-        button.grid(row=3, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        entry_asistencia.grid(row=2, column=1, pady=(20, 0), sticky="nsew")
+        button = customtkinter.CTkButton(self.frame_asistencia, width=220, text="CONFIRMAR", command=lambda: (registrarAsistencia(obtener_datos_cliente(entry_asistencia.get()),self),entry_asistencia.delete(0, tk.END)), corner_radius=6)
+        button.grid(row=3, column=1, pady=(20, 0), sticky="nsew")
         #hace lo mismo que apretar el boton
 
         def funcion_al_presionar_tecla(event):
             if entry_asistencia.get() != "":
-                registrarAsistencia(obtener_datos_cliente(entry_asistencia.get())),entry_asistencia.delete(0, tk.END)
+                registrarAsistencia(obtener_datos_cliente(entry_asistencia.get()),self),entry_asistencia.delete(0, tk.END)
         #ejecuta la funcion de arriba con apretar el enter
         self.bind("<Return>", funcion_al_presionar_tecla)
 
@@ -424,8 +424,12 @@ def pagoCuotas(self):
 
 
 def actualizarPrecio(self):
+    
         self.frame_actualizarPrecio = customtkinter.CTkFrame(self, width=250)
         self.frame_actualizarPrecio.grid(row=0, rowspan=2, column=1,columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        self.frame_actualizarPrecio.grid_columnconfigure((0,2), weight=1)
+        self.frame_actualizarPrecio.grid_columnconfigure(1, weight=0)
+        self.frame_actualizarPrecio.grid_rowconfigure((0, 1, 2), weight=0)
         class ProgramaABM:
             def __init__(self, frame):
                 self.frame = frame
@@ -455,7 +459,7 @@ def actualizarPrecio(self):
 
                 # Crear una lista para mostrar los datos de la base de datos
                 self.lista_programas = tk.Listbox(frame)
-                self.lista_programas.grid(row=4, column=0, columnspan=2)
+                self.lista_programas.grid(row=4, column=1)
                 self.mostrar_programas()
 
                 # Asignar una función para manejar la selección en la lista
@@ -569,7 +573,6 @@ def mostrarResultados(self):
         for resultado in resultados_filtrados:
             lista_resultados.insert(tk.END, resultado)
         # Muestra u oculta la lista de resultados en función de si hay resultados
-        # Muestra u oculta la lista de resultados en función de si hay resultados
         if not resultados_filtrados or self.entry.get() == "":
             lista_resultados.grid_forget()  # Cambiado a grid_forget
         else:
@@ -584,9 +587,9 @@ def mostrarResultados(self):
     lista_resultados = tk.Listbox(self)
     lista_resultados.config(width=20, height=5)  # Configurar el ancho y alto de la lista de resultados
     # Crear un cuadro de entrada personalizado (CustomEntry)
-    self.entry = customtkinter.CTkEntry(self, placeholder_text="Input")
+    self.entry = customtkinter.CTkEntry(self, placeholder_text="buscar ficha")
     self.entry.grid(row=3, column=0, padx=(20, 20), pady=(20, 20), sticky="nsew")
-    self.main_button_1 = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
+    self.main_button_1 = customtkinter.CTkButton(master=self,text="Buscar", fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
     self.main_button_1.grid(row=3, column=1, padx=(20, 20), pady=(20, 20), sticky="nsew")
     actualizar_resultados()
     conexion.close()

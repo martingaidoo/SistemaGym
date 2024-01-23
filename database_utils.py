@@ -19,6 +19,9 @@ fecha_con_mes_adicional = fecha_actual + relativedelta(months=1)
 actual = fecha_actual.strftime("%d/%m/%Y")
 actaulMasMes = fecha_con_mes_adicional.strftime("%d/%m/%Y")
 
+#sirve para destrouit la ventada de la asistencia del cliente
+banderaDestroy = True
+
 
 """ en esta funcion registrara la asistencia de un usuario
 
@@ -28,10 +31,60 @@ Args:
 return:
     registrar: registra la asistencia el la tabla de asistencia con una fecha 
 """
-def registrarAsistencia(datos):
+
+def registrarAsistencia(datos, self): 
+    def funcion_despues_del_temporizador(label): #sirve para destruir las ventanas de asistencia del cliente
+        global banderaDestroy
+        if banderaDestroy:
+            vencidoDark.destroy()
+            label.destroy()
+            label_deuda = customtkinter.CTkLabel(self.frame_asistencia, text="", fg_color="transparent")
+            label_deuda.configure(text=f"")
+            label_deuda.grid(row=6, column=1, pady=(0, 0), sticky="nsew")
+    def timerBandera(): #sirve para darle un tiempo a lña ventana y que no se destroy
+        global banderaDestroy
+        banderaDestroy = True
     id_cliente,apellido,nombre, documento, correo, fecha_nacimiento, telefono, id_cuota, deuda, plan, profesor, fecha, vencimiento, id_cliente2, id_cuota = datos
-    mensaje = f"Registro de Asistencia:\n\nNombre: {nombre}\nApellido: {apellido}\nVencimiento: {vencimiento}\nPlan: {plan}"
-    messagebox.showinfo("Asistencia Registrada", mensaje)
+    fecha_vencimiento = datetime.strptime(vencimiento, "%d/%m/%Y")
+    fecha_actual = datetime.strptime(actual, "%d/%m/%Y")
+    #esto va a ser la imagen de la asistencia del cliente
+    img_vencido = customtkinter.CTkImage(light_image=Image.open("./assets/casiVencidaLight.png"),
+                                    dark_image=Image.open("./assets/casiVencidaDark.png"),
+                                    size=(500, 200))
+    texto_personalizado = f" \n                {nombre} {apellido}\n \n \n {plan}\n \n \n \n {vencimiento}\n"
+    vencidoDark = customtkinter.CTkLabel(self.frame_asistencia, image=img_vencido, text=texto_personalizado,
+                                                font=("Arial", 14),
+                                                anchor="n")  # "w" significa alinear a la izquierda
+    vencidoDark.grid(row=4, column=1, pady=(20,0), sticky="nsew")
+    if (fecha_actual >= fecha_vencimiento):
+            #esto va a ser la ventana de vencimiento de abajo
+            banderaDestroy = False
+            label_vencido = customtkinter.CTkLabel(self.frame_asistencia, text=f"CUOTA VENCIDA", fg_color="red")
+            label_vencido.grid(row=5, column=1,sticky="nsew")
+            self.frame_asistencia.after(7000, timerBandera) 
+            self.frame_asistencia.after(8000, lambda: (funcion_despues_del_temporizador(label_vencido)))
+            #esto va a de al dia de abajo
+    if (fecha_actual < fecha_vencimiento):
+        banderaDestroy = False
+        if (fecha_vencimiento-fecha_actual).days <= 5:
+            label_vence = customtkinter.CTkLabel(self.frame_asistencia, text=f"VENCE EN {(fecha_vencimiento-fecha_actual).days} DÍAS", fg_color="yellow")
+            label_vence.grid(row=5, column=1, pady=(0,0),sticky="nsew")
+            self.frame_asistencia.after(7000, timerBandera) 
+            self.frame_asistencia.after(8000, lambda: (funcion_despues_del_temporizador(label_vence)))        
+        else:
+            label_ALDIA = customtkinter.CTkLabel(self.frame_asistencia, text=f"CUOTA AL DIA", fg_color="green")
+            label_ALDIA.grid(row=5, column=1,sticky="nsew")
+            self.frame_asistencia.after(7000, timerBandera) 
+            self.frame_asistencia.after(8000, lambda: (funcion_despues_del_temporizador(label_ALDIA)))
+    #esto va a ser la ventana de deuda de abajo
+    if int(deuda) > 0:
+        label_deuda = customtkinter.CTkLabel(self.frame_asistencia, text="", fg_color="orange")
+        label_deuda.configure(text=f"Deuda: {deuda}")
+        label_deuda.grid(row=6, column=1, pady=(0, 0), sticky="nsew")
+    else:
+        label_deuda = customtkinter.CTkLabel(self.frame_asistencia, text="", fg_color="transparent")
+        label_deuda.configure(text=f"")
+        label_deuda.grid(row=6, column=1, pady=(0, 0), sticky="nsew")
     conn = sqlite3.connect("BaseDatos.db")
     cursor = conn.cursor()
     cursor.execute("INSERT INTO Asistencia (Cliente, Fecha) VALUES (?, ?)",

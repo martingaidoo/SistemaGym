@@ -27,7 +27,7 @@ customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
 def conectar_bd():
         # Configura la conexión a la base de datos SQLite
-        conexion = sqlite3.connect('C:/Users/Usuario/Desktop/Laburo/SistemaGym-main/BaseDatos.db')
+        conexion = sqlite3.connect('BaseDatos.db')
         return conexion
 
 def obtener_notificaciones():
@@ -47,13 +47,13 @@ def obtener_notificaciones():
             JOIN Clientes ON Cuotas.id = Cuotas.id
             WHERE Cuotas.vencimiento < ?
         """
+        
 
         # Ejecuta la consulta
         cursor.execute(consulta, (fecha_actual,))
 
         # Obtiene los resultados
         resultados = cursor.fetchall()
-
         # Cierra el cursor y la conexión
         cursor.close()
         conexion.close()
