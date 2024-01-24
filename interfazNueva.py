@@ -27,38 +27,38 @@ customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
 def conectar_bd():
         # Configura la conexión a la base de datos SQLite
-        conexion = sqlite3.connect('BaseDatos.db')
+        conexion = sqlite3.connect('C:/Users/Usuario/Desktop/Laburo/SistemaGym-main/BaseDatos.db')
         return conexion
 
 def obtener_notificaciones():
-        # Conecta a la base de datos
-        conexion = conectar_bd()
+    # Conecta a la base de datos
+    conexion = conectar_bd()
 
-        # Crea un cursor para ejecutar consultas SQL
-        cursor = conexion.cursor()
+    # Crea un cursor para ejecutar consultas SQL
+    cursor = conexion.cursor()
 
-        # Obtiene la fecha actual
-        fecha_actual = datetime.now().strftime('%Y-%m-%d')
+    # Obtiene la fecha actual como un objeto datetime
+    fecha_actual = datetime.now().date()
 
-        # Consulta para obtener los nombres de las personas cuyo vencimiento ha pasado
-        consulta = """
-            SELECT Clientes.Nombre
-            FROM Cuotas
-            JOIN Clientes ON Cuotas.id = Cuotas.id
-            WHERE Cuotas.vencimiento < ?
-        """
-        
+    # Consulta para obtener los nombres de las personas cuyo vencimiento ha pasado
+    consulta = """
+        SELECT Clientes.Nombre, Cuotas.vencimiento
+        FROM Cuotas
+        JOIN Clientes ON Cuotas.id_cliente = Clientes.id
+        WHERE Cuotas.vencimiento < ?
+    """
 
-        # Ejecuta la consulta
-        cursor.execute(consulta, (fecha_actual,))
+    # Ejecuta la consulta
+    cursor.execute(consulta, (fecha_actual,))
 
-        # Obtiene los resultados
-        resultados = cursor.fetchall()
-        # Cierra el cursor y la conexión
-        cursor.close()
-        conexion.close()
+    # Obtiene los resultados
+    resultados = cursor.fetchall()
 
-        return resultados
+    # Cierra el cursor y la conexión
+    cursor.close()
+    conexion.close()
+
+    return resultados
 class App(customtkinter.CTk):
     def __init__(self):
             super().__init__()
