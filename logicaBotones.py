@@ -24,10 +24,6 @@ import sys
 
 banderaVencimiento = False
 
-
-
-
-
 def controlAcceso(self):
         self.frame_asistencia = customtkinter.CTkFrame(self, width=250)
         self.frame_asistencia.grid(row=0, rowspan=2, column=1,columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
@@ -54,6 +50,7 @@ def controlAcceso(self):
                 registrarAsistencia(obtener_datos_cliente(entry_asistencia.get()),self),entry_asistencia.delete(0, tk.END)
         #ejecuta la funcion de arriba con apretar el enter
         self.bind("<Return>", funcion_al_presionar_tecla)
+
 
 def registrarCliente(self):
         self.frame_registrarCliente = customtkinter.CTkFrame(self, width=250)
@@ -107,7 +104,7 @@ def registrarCliente(self):
             master=self.frame_registrarCliente,
             width=220,
             text="Confirmar",
-            command=lambda: (agregar_cliente([entry_nombre.get(),entry_apellido.get(), entry_correo.get(), entry_documento.get(),datetime.strptime(cal.get_date(), "%d/%m/%y").strftime("%d/%m/%Y"), entry_telefono.get()]),self.frame_pagoCuota.pack(pady=60),self.frame_registrarCliente.pack_forget()),
+            command=lambda: (agregar_cliente([entry_nombre.get(),entry_apellido.get(), entry_correo.get(), entry_documento.get(), datetime.strptime(cal.get_date(), "%d/%m/%y").strftime("%d/%m/%Y"), entry_telefono.get()]),self.frame_pagoCuota.pack(pady=60),self.frame_registrarCliente.pack_forget()),
             corner_radius=6
         )
         button_confirmar.grid(row=13, column=1, padx=(20, 0), pady=(5, 0), sticky="nsew")
@@ -644,9 +641,9 @@ def fichacliente(documento):
                 boton_cierre.grid(row=0, column=4, sticky="nsew")
 
                 # frame de la izquierda
-                img_persona = customtkinter.CTkImage(light_image=Image.open("./assets/personaLight2.png"),
-                                        dark_image=Image.open("./assets/personaDark2.png"),
-                                        size=(200, 200))
+                #img_persona = customtkinter.CTkImage(light_image=Image.open("./assets/personaLight2.png"),
+                #                        dark_image=Image.open("./assets/personaDark2.png"),
+                #                        size=(200, 200))
                 
 
                 self.sidebar_frame = customtkinter.CTkFrame(self, width=140)

@@ -185,7 +185,6 @@ class App(customtkinter.CTk):
         self.seg_button_1.configure(values=["a", "b", "c"])
         self.seg_button_1.set("Value 2")
 
-
     def open_input_dialog_event(self):
         dialog = customtkinter.CTkInputDialog(text="Escribi algo:", title="Cuadro de dialogo")
         print("El usuario escribio:", dialog.get_input())

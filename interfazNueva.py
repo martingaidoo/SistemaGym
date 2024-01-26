@@ -19,12 +19,16 @@ import keyboard
 from datetime import datetime
 from database_utils import *
 from informes import *
+from tkinter import PhotoImage
+from PIL import Image, ImageTk
 import os
 import sys
 
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
+
+
 def conectar_bd():
         # Configura la conexión a la base de datos SQLite
         conexion = sqlite3.connect('BaseDatos.db')
@@ -62,7 +66,58 @@ def obtener_notificaciones():
 class App(customtkinter.CTk):
     def __init__(self):
             super().__init__()
+            
+            self.interface_mode = "Dark"  # Puedes cambiar esto dinámicamente según tu lógica
 
+            # Cargar los iconos según el modo de apariencia
+            self.load_icons()
+            
+            icon_path = "./assets/controlaccesodark.png"
+            icon_path2 = "./assets/registrarnuevoclientedark.png"
+            icon_path3 = "./assets/actualizarclientesdark.png"
+            icon_path4 = "./assets/consultarcuotasdark.png"
+            icon_path5 = "./assets/pagocuotadark.png"
+            icon_path6 = "./assets/actualizarplanesdark.png"
+            icon_path7 = "./assets/exel.png"
+            icon_pathbuscarficha = "./assets/buscardark.png"
+
+            new_size = (40, 40)
+            img = Image.open(icon_path)
+            img_2 = Image.open(icon_path2)
+            img_2 = img_2.resize(new_size)
+            img_3 = Image.open(icon_path3)
+            img_3 = img_3.resize(new_size)
+            img_4 = Image.open(icon_path4)
+            img_4 = img_4.resize(new_size)
+            img_5 = Image.open(icon_path5)
+            img_5 = img_5.resize(new_size)
+            img_6 = Image.open(icon_path6)
+            img_6 = img_6.resize(new_size)
+            img_7 = Image.open(icon_path7)
+            img_7 = img_7.resize(new_size)
+            imgbuscarficha = Image.open(icon_pathbuscarficha)
+            imgbuscarficha = imgbuscarficha.resize(new_size)
+            
+
+        # Ajusta el tamaño deseado (por ejemplo, 50x50 píxeles)
+            img = img.resize(new_size)
+
+    # Guarda la imagen ajustada como un archivo temporal en formato GIF
+            temp_gif_path = "temp_icon.gif"
+            img.save(temp_gif_path, "GIF")
+
+# Crea un objeto PhotoImage con la imagen ajustada
+            icon_image = PhotoImage(file=temp_gif_path)
+            self.icon_image = ImageTk.PhotoImage(img)
+            icon_image_2 = ImageTk.PhotoImage(img_2)
+            icon_image_3 = ImageTk.PhotoImage(img_3)
+            icon_image_4 = ImageTk.PhotoImage(img_4)
+            icon_image_5 = ImageTk.PhotoImage(img_5)
+            icon_image_6 = ImageTk.PhotoImage(img_6)
+            icon_image_7 = ImageTk.PhotoImage(img_7)
+            icon_imagenbuscarficha = ImageTk.PhotoImage(imgbuscarficha)
+
+            
             # configure window
             self.title("Gym Master")
             self.geometry(f"{1100}x{580}")
@@ -78,19 +133,27 @@ class App(customtkinter.CTk):
             self.sidebar_frame.grid_rowconfigure(8, weight=1)
             self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="Salud Integral", font=customtkinter.CTkFont(size=20, weight="bold"))
             self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
-            self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar_frame, command=lambda:(controlAcceso(self)), text="Control de acceso")
+            self.sidebar_button_1 = customtkinter.CTkLabel(self.sidebar_frame, image=self.icon_image, text="Control de acceso", compound="top")
+            self.sidebar_button_1.bind("<Button-1>", lambda event: controlAcceso(self))
             self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
-            self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar_frame, command=lambda:(registrarCliente(self)), text = "Registrar Nuevo Cliente")
-            self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
-            self.sidebar_button_3 = customtkinter.CTkButton(self.sidebar_frame, command=lambda:(actualizarClientes(self)), text = "Actualizar Cliente")
+
+            self.sidebar_button_2 = customtkinter.CTkLabel(self.sidebar_frame, image=icon_image_2, text="Registrar nuevo cliente", compound="top")
+            self.sidebar_button_2.bind("<Button-1>", lambda event: (registrarCliente(self)))
+            self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=20)
+            self.sidebar_button_3 = customtkinter.CTkLabel(self.sidebar_frame, image=icon_image_3, text="Actualizar Clientes", compound="top")
+            self.sidebar_button_3.bind("<Button-1>", lambda event: (actualizarClientes(self)))
             self.sidebar_button_3.grid(row=3, column=0, padx=20, pady=10)
-            self.sidebar_button_4 = customtkinter.CTkButton(self.sidebar_frame, command=lambda:(consultarCuotas(self)), text = "Consultar Cuotas")
+            self.sidebar_button_4 = customtkinter.CTkLabel(self.sidebar_frame, image=icon_image_4, text="Consultar Clientes", compound="top")
+            self.sidebar_button_4.bind("<Button-1>", lambda event: (consultarCuotas(self)))
             self.sidebar_button_4.grid(row=4, column=0, padx=20, pady=10)
-            self.sidebar_button_5 = customtkinter.CTkButton(self.sidebar_frame, command=lambda:(pagoCuotas(self)), text = "Pago de Cuota")
+            self.sidebar_button_5 = customtkinter.CTkLabel(self.sidebar_frame, image=icon_image_5, text="Pago de cuota", compound="top")
+            self.sidebar_button_5.bind("<Button-1>", lambda event: (pagoCuotas(self)))
             self.sidebar_button_5.grid(row=5, column=0, padx=20, pady=10)
-            self.sidebar_button_6 = customtkinter.CTkButton(self.sidebar_frame, command=lambda:(actualizarPrecio(self)), text = "Actualizar Planes")
+            self.sidebar_button_6 = customtkinter.CTkLabel(self.sidebar_frame, image=icon_image_6, text="Actualizar planes", compound="top")
+            self.sidebar_button_6.bind("<Button-1>", lambda event: (actualizarPrecio(self)))
             self.sidebar_button_6.grid(row=6, column=0, padx=20, pady=10)
-            self.sidebar_button_7 = customtkinter.CTkButton(self.sidebar_frame, command=lambda:(generar_completo()), text = "Generar Exel Clientes")
+            self.sidebar_button_7 = customtkinter.CTkLabel(self.sidebar_frame, image=icon_image_7, text="Generar Excel", compound="top")
+            self.sidebar_button_7.bind("<Button-1>", lambda event: (generar_completo()))
             self.sidebar_button_7.grid(row=7, column=0, padx=20, pady=10)
             #simplemente se hace invisible este boton para que genere un espacio
             self.sidebar_button_8 = customtkinter.CTkButton(self.sidebar_frame, command=lambda:(self.sidebar_button_event), text="Hace click")
@@ -134,8 +197,6 @@ class App(customtkinter.CTk):
             self.label_tab_2.grid(row=0, column=0, padx=20, pady=20)
 
   
-
-
             # create scrollable frame
             self.scrollable_frame = customtkinter.CTkScrollableFrame(self, label_text="Notificaciones")
             self.scrollable_frame.grid(row=0, column=3, padx=(20, 0), pady=(20, 0), sticky="nsew")
@@ -167,10 +228,111 @@ class App(customtkinter.CTk):
 
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
+         # Cambia el modo de la interfaz y recarga los iconos
+        self.interface_mode = new_appearance_mode.lower()
+        self.load_icons()
+
+        # Actualiza los botones conlos nuevos iconos
+        self.sidebar_button_1.configure(image=self.get_current_icon_button_1())
+        self.sidebar_button_2.configure(image=self.get_current_icon_button_2())
+        self.sidebar_button_3.configure(image=self.get_current_icon_button_3())
+        self.sidebar_button_4.configure(image=self.get_current_icon_button_4())
+        self.sidebar_button_5.configure(image=self.get_current_icon_button_5())
+        self.sidebar_button_6.configure(image=self.get_current_icon_button_6())
+        self.sidebar_button_7.configure(image=self.get_current_icon_button_7())
+        self.buscarFichas_frame.configure(image=self.get_current_icon_button_buscarficha())
+        
+        
+    def get_current_icon_button_1(self):
+        # Devuelve el icono correspondiente al modo actual para el botón 1
+        return self.icon_image_light if self.interface_mode == "light" else self.icon_image_dark
+    def get_current_icon_button_2(self):
+        # Devuelve el icono correspondiente al modo actual para el botón 1
+        return self.icon_image_light2 if self.interface_mode == "light" else self.icon_image_dark2
+    def get_current_icon_button_3(self):
+        # Devuelve el icono correspondiente al modo actual para el botón 1
+        return self.icon_image_light3 if self.interface_mode == "light" else self.icon_image_dark3
+    def get_current_icon_button_4(self):
+        # Devuelve el icono correspondiente al modo actual para el botón 1
+        return self.icon_image_light4 if self.interface_mode == "light" else self.icon_image_dark4
+    def get_current_icon_button_5(self):
+        # Devuelve el icono correspondiente al modo actual para el botón 1
+        return self.icon_image_light5 if self.interface_mode == "light" else self.icon_image_dark5
+    def get_current_icon_button_6(self):
+        # Devuelve el icono correspondiente al modo actual para el botón 1
+        return self.icon_image_light6 if self.interface_mode == "light" else self.icon_image_dark6
+    def get_current_icon_button_7(self):
+        # Devuelve el icono correspondiente al modo actual para el botón 1
+        return self.icon_image_light7 if self.interface_mode == "light" else self.icon_image_dark7
+    def get_current_icon_button_buscarficha(self):
+        # Devuelve el icono correspondiente al modo actual para el botón 1
+        return self.icon_image_lightbuscar if self.interface_mode == "light" else self.icon_image_darkbuscar
+
 
     def change_scaling_event(self, new_scaling: str):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
         customtkinter.set_widget_scaling(new_scaling_float)
+    def load_icons(self):
+        # Rutas de los archivos de iconos para light y dark mode
+        
+        icon_path_dark = "./assets/controlaccesodark.png"
+        icon_path2_dark = "./assets/registrarnuevoclientedark.png"
+        icon_path3_dark = "./assets/actualizarclientesdark.png"
+        icon_path4_dark = "./assets/consultarcuotasdark.png"
+        icon_path5_dark = "./assets/pagocuotadark.png"
+        icon_path6_dark = "./assets/actualizarplanesdark.png"
+        icon_path7_dark = "./assets/exel.png"
+        icon_path_darkbuscar = "./assets/buscardark.png"
+
+        icon_path_light = "./assets/controlaccesolight.png"
+        icon_path2_light = "./assets/registrarnuevoclientelight.png"
+        icon_path3_light = "./assets/actualizarclienteslight.png"
+        icon_path4_light = "./assets/consultarcuotaslight.png"
+        icon_path5_light = "./assets/pagocuotalight.png"
+        icon_path6_light = "./assets/actualizarplaneslight.png"
+        icon_path7_light = "./assets/exel.png"
+        icon_path_lightbuscar = "./assets/buscarlight.png"
+
+        # Abre las imágenes con Pillow y ajusta el tamaño si es necesario
+        img_light = Image.open(icon_path_light).resize((40, 40))
+        img_light2 =Image.open(icon_path2_light).resize((40, 40))
+        img_light3 = Image.open(icon_path3_light).resize((40, 40))
+        img_light4 =Image.open(icon_path4_light).resize((40, 40))
+        img_light5 = Image.open(icon_path5_light).resize((40, 40))
+        img_light6 =Image.open(icon_path6_light).resize((40, 40))
+        img_light7 = Image.open(icon_path7_light).resize((40, 40))
+        img_buscarlight = Image.open(icon_path_lightbuscar).resize((40, 40))
+        
+        img_dark = Image.open(icon_path_dark).resize((40, 40))
+        img_dark2 = Image.open(icon_path2_dark).resize((40, 40))
+        img_dark3 =Image.open(icon_path3_dark).resize((40, 40))
+        img_dark4 = Image.open(icon_path4_dark).resize((40, 40))
+        img_dark5 =Image.open(icon_path5_dark).resize((40, 40))
+        img_dark6 = Image.open(icon_path6_dark).resize((40, 40))
+        img_dark7 =Image.open(icon_path7_dark).resize((40, 40))
+        img_buscardark = Image.open(icon_path_darkbuscar).resize((40, 40))
+        
+        
+
+        # Guarda las imágenes ajustadas como objetos ImageTk
+        self.icon_image_light = ImageTk.PhotoImage(img_light)
+        self.icon_image_light2 = ImageTk.PhotoImage(img_light2)
+        self.icon_image_light3 = ImageTk.PhotoImage(img_light3)
+        self.icon_image_light4 = ImageTk.PhotoImage(img_light4)
+        self.icon_image_light5 = ImageTk.PhotoImage(img_light5)
+        self.icon_image_light6 = ImageTk.PhotoImage(img_light6)
+        self.icon_image_light7 = ImageTk.PhotoImage(img_light7)
+        self.icon_image_lightbuscar = ImageTk.PhotoImage(img_buscarlight)
+        
+        self.icon_image_dark = ImageTk.PhotoImage(img_dark)
+        self.icon_image_dark2 = ImageTk.PhotoImage(img_dark2)
+        self.icon_image_dark3 = ImageTk.PhotoImage(img_dark3)
+        self.icon_image_dark4 = ImageTk.PhotoImage(img_dark4)
+        self.icon_image_dark5 = ImageTk.PhotoImage(img_dark5)
+        self.icon_image_dark6 = ImageTk.PhotoImage(img_dark6)
+        self.icon_image_dark7 = ImageTk.PhotoImage(img_dark7)
+        self.icon_image_darkbuscar = ImageTk.PhotoImage(img_buscardark)
+        
 
 if __name__ == "__main__":
     app = App()
