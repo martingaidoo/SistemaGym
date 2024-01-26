@@ -32,6 +32,30 @@ return:
     registrar: registra la asistencia el la tabla de asistencia con una fecha 
 """
 
+
+
+def buscar_cliente_con_cuotas(documento):
+    # Conectar con la base de datos
+    conexion = sqlite3.connect('BaseDatos.db')
+    cursor = conexion.cursor()
+
+    # Ejecutar la consulta SQL para seleccionar la información del cliente por su documento
+    cursor.execute("SELECT * FROM Clientes WHERE Documento = ?", (documento,))
+    cliente = cursor.fetchone()  # Obtener el primer cliente que coincida con el documento
+    
+    if cliente:
+        # Obtener las cuotas del cliente
+        cursor.execute("SELECT * FROM Cuotas WHERE id_cliente = ?", (cliente[0],))
+        cuotas = cursor.fetchone()
+    else:
+        cuotas = []
+
+    # Cerrar la conexión con la base de datos
+    conexion.close()
+
+    return cliente, cuotas
+
+
 def registrarAsistencia(datos, self): 
     def funcion_despues_del_temporizador(label): #sirve para destruir las ventanas de asistencia del cliente
         global banderaDestroy
@@ -108,6 +132,7 @@ def agregar_cliente(cliente_data):
     # Obtener los datos del cliente
     nombre, apellido, correo, documento, fecha_nacimiento, telefono = cliente_data
     # Verificar que ningún dato esté vacío
+    print(fecha_nacimiento)
     if apellido and nombre and documento and correo and fecha_nacimiento and telefono:
         try:
             # Insertar los datos en la tabla

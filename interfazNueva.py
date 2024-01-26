@@ -27,7 +27,7 @@ customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
 def conectar_bd():
         # Configura la conexión a la base de datos SQLite
-        conexion = sqlite3.connect('C:/Users/Usuario/Desktop/Laburo/SistemaGym-main/BaseDatos.db')
+        conexion = sqlite3.connect('BaseDatos.db')
         return conexion
 
 def obtener_notificaciones():
