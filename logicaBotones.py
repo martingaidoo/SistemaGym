@@ -25,29 +25,35 @@ import sys
 banderaVencimiento = False
 
 def controlAcceso(self):
+        icon_path = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\logo.png"
+
+        icon_image = PhotoImage(file=icon_path)
         self.frame_asistencia = customtkinter.CTkFrame(self, width=250)
         self.frame_asistencia.grid(row=0, rowspan=2, column=1,columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        self.frame_asistencia.grid_columnconfigure((0,2), weight=1)
+        self.frame_asistencia.grid_columnconfigure((0,2), weight=2)
         self.frame_asistencia.grid_columnconfigure(1, weight=0)
-        self.frame_asistencia.grid_rowconfigure((0, 1, 2), weight=0)
+        self.frame_asistencia.grid_rowconfigure((0, 1,2,3,4), weight=0)
         
-        label_titulo = customtkinter.CTkLabel(self.frame_asistencia, text="CONTROL DE ACCESO", font=('Century Gothic',30))
-        label_titulo.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        
         label_documento = customtkinter.CTkLabel(self.frame_asistencia, text="Documente:", font=('Century Gothic',15))
-        label_documento.grid(row=1, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        label_documento.grid(row=1, column=1, pady=(20, 0), sticky="nsew")
         
         entry_asistencia = customtkinter.CTkEntry(self.frame_asistencia,
-                                    width=200,
+                                    width=500,
                                     height=25,
                                     corner_radius=10)
-        entry_asistencia.grid(row=2, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        button = customtkinter.CTkButton(self.frame_asistencia, width=220, text="CONFIRMAR", command=lambda: (registrarAsistencia(obtener_datos_cliente(entry_asistencia.get())),entry_asistencia.delete(0, tk.END)), corner_radius=6)
-        button.grid(row=3, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        entry_asistencia.grid(row=2, column=1, pady=(20, 0), sticky="nsew")
+        button = customtkinter.CTkButton(self.frame_asistencia, width=220, text="CONFIRMAR", command=lambda: (registrarAsistencia(obtener_datos_cliente(entry_asistencia.get()),self),entry_asistencia.delete(0, tk.END)), corner_radius=6)
+        button_label = customtkinter.CTkLabel(self.frame_asistencia, image=icon_image, text="CONFIRMAR", compound="top", command=lambda: self.registrarAsistencia(entry_asistencia.get()))
+        button_label.image = icon_image  # Para evitar que el recolector de basura elimine la imagen
+
+        button_label.grid(row=3, column=1, pady=(20, 0), sticky="nsew")
+        button.grid(row=3, column=1, pady=(20, 0), sticky="nsew")
         #hace lo mismo que apretar el boton
 
         def funcion_al_presionar_tecla(event):
             if entry_asistencia.get() != "":
-                registrarAsistencia(obtener_datos_cliente(entry_asistencia.get())),entry_asistencia.delete(0, tk.END)
+                registrarAsistencia(obtener_datos_cliente(entry_asistencia.get()),self),entry_asistencia.delete(0, tk.END)
         #ejecuta la funcion de arriba con apretar el enter
         self.bind("<Return>", funcion_al_presionar_tecla)
 
@@ -459,7 +465,7 @@ def actualizarPrecio(self):
 
                 # Crear una lista para mostrar los datos de la base de datos
                 self.lista_programas = tk.Listbox(frame)
-                self.lista_programas.grid(row=4, column=0, columnspan=2)
+                self.lista_programas.grid(row=4, column=1)
                 self.mostrar_programas()
 
                 # Asignar una función para manejar la selección en la lista
@@ -572,7 +578,6 @@ def mostrarResultados(self):
         # Agrega los nuevos resultados filtrados a la lista
         for resultado in resultados_filtrados:
             lista_resultados.insert(tk.END, resultado)
-        # Muestra u oculta la lista de resultados en función de si hay resultados
         # Muestra u oculta la lista de resultados en función de si hay resultados
         if not resultados_filtrados or self.entry.get() == "":
             lista_resultados.grid_forget()  # Cambiado a grid_forget
