@@ -18,6 +18,36 @@ fecha_con_mes_adicional = fecha_actual + relativedelta(months=1)
 # Formatear la fecha como días/mes/año
 actual = fecha_actual.strftime("%d/%m/%Y")
 actaulMasMes = fecha_con_mes_adicional.strftime("%d/%m/%Y")
+#sirve para destrouit la ventada de la asistencia del cliente
+banderaDestroy = True
+
+def buscar_cliente_con_cuotas(documento):
+    # Conectar con la base de datos
+    conexion = sqlite3.connect('BaseDatos.db')
+    cursor = conexion.cursor()
+
+    # Ejecutar la consulta SQL para seleccionar la información del cliente por su documento
+    cursor.execute("SELECT * FROM Clientes WHERE Documento = ?", (documento,))
+    cliente = cursor.fetchone()  # Obtener el primer cliente que coincida con el documento
+    
+    if cliente:
+        # Obtener las cuotas del cliente
+        cursor.execute("SELECT * FROM Cuotas WHERE id_cliente = ?", (cliente[0],))
+        cuotas = cursor.fetchone()
+    else:
+        cuotas = []
+
+    # Cerrar la conexión con la base de datos
+    conexion.close()
+
+    return cliente, cuotas
+
+
+
+
+
+
+
 
 
 """ en esta funcion registrara la asistencia de un usuario

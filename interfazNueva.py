@@ -27,9 +27,11 @@ import sys
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
+
+
 def conectar_bd():
         # Configura la conexión a la base de datos SQLite
-        conexion = sqlite3.connect('C:/Users/Usuario/Desktop/Laburo/SistemaGym-main/BaseDatos.db')
+        conexion = sqlite3.connect('BaseDatos.db')
         return conexion
 
 def obtener_notificaciones():
@@ -69,21 +71,16 @@ class App(customtkinter.CTk):
 
             # Cargar los iconos según el modo de apariencia
             self.load_icons()
+            
+            icon_path = "./assets/controlaccesodark.png"
+            icon_path2 = "./assets/registrarnuevoclientedark.png"
+            icon_path3 = "./assets/actualizarclientesdark.png"
+            icon_path4 = "./assets/consultarcuotasdark.png"
+            icon_path5 = "./assets/pagocuotadark.png"
+            icon_path6 = "./assets/actualizarplanesdark.png"
+            icon_path7 = "./assets/exel.png"
+            icon_pathbuscarficha = "./assets/buscardark.png"
 
-            
-            
-            
-            
-            
-            
-            icon_path = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\controlaccesodark.png"
-            icon_path2 = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\registrarnuevoclientedark.png"
-            icon_path3 = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\actualizarclientesdark.png"
-            icon_path4 = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\consultarcuotasdark.png"
-            icon_path5 = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\pagocuotadark.png"
-            icon_path6 = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\actualizarplanesdark.png"
-            icon_path7 = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\exel.png"
-            icon_pathbuscarficha = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\buscardark.png"
             new_size = (40, 40)
             img = Image.open(icon_path)
             img_2 = Image.open(icon_path2)
@@ -121,13 +118,6 @@ class App(customtkinter.CTk):
             icon_imagenbuscarficha = ImageTk.PhotoImage(imgbuscarficha)
 
             
-
-
-
-
-
-
-
             # configure window
             self.title("Gym Master")
             self.geometry(f"{1100}x{580}")
@@ -207,8 +197,6 @@ class App(customtkinter.CTk):
             self.label_tab_2.grid(row=0, column=0, padx=20, pady=20)
 
   
-
-
             # create scrollable frame
             self.scrollable_frame = customtkinter.CTkScrollableFrame(self, label_text="Notificaciones")
             self.scrollable_frame.grid(row=0, column=3, padx=(20, 0), pady=(20, 0), sticky="nsew")
@@ -255,7 +243,6 @@ class App(customtkinter.CTk):
         self.buscarFichas_frame.configure(image=self.get_current_icon_button_buscarficha())
         
         
-        
     def get_current_icon_button_1(self):
         # Devuelve el icono correspondiente al modo actual para el botón 1
         return self.icon_image_light if self.interface_mode == "light" else self.icon_image_dark
@@ -288,23 +275,23 @@ class App(customtkinter.CTk):
     def load_icons(self):
         # Rutas de los archivos de iconos para light y dark mode
         
-        icon_path_dark = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\controlaccesodark.png"
-        icon_path2_dark = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\registrarnuevoclientedark.png"
-        icon_path3_dark = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\actualizarclientesdark.png"
-        icon_path4_dark = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\consultarcuotasdark.png"
-        icon_path5_dark = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\pagocuotadark.png"
-        icon_path6_dark = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\actualizarplanesdark.png"
-        icon_path7_dark = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\exel.png"
-        icon_path_darkbuscar = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\buscardark.png"
-        
-        icon_path_light = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\controlaccesolight.png"
-        icon_path2_light = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\registrarnuevoclientelight.png"
-        icon_path3_light = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\actualizarclienteslight.png"
-        icon_path4_light = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\consultarcuotaslight.png"
-        icon_path5_light = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\pagocuotalight.png"
-        icon_path6_light= r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\actualizarplaneslight.png"
-        icon_path7_light= r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\exel.png"
-        icon_path_lightbuscar = r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\buscarlight.png"
+        icon_path_dark = "./assets/controlaccesodark.png"
+        icon_path2_dark = "./assets/registrarnuevoclientedark.png"
+        icon_path3_dark = "./assets/actualizarclientesdark.png"
+        icon_path4_dark = "./assets/consultarcuotasdark.png"
+        icon_path5_dark = "./assets/pagocuotadark.png"
+        icon_path6_dark = "./assets/actualizarplanesdark.png"
+        icon_path7_dark = "./assets/exel.png"
+        icon_path_darkbuscar = "./assets/buscardark.png"
+
+        icon_path_light = "./assets/controlaccesolight.png"
+        icon_path2_light = "./assets/registrarnuevoclientelight.png"
+        icon_path3_light = "./assets/actualizarclienteslight.png"
+        icon_path4_light = "./assets/consultarcuotaslight.png"
+        icon_path5_light = "./assets/pagocuotalight.png"
+        icon_path6_light = "./assets/actualizarplaneslight.png"
+        icon_path7_light = "./assets/exel.png"
+        icon_path_lightbuscar = "./assets/buscarlight.png"
 
         # Abre las imágenes con Pillow y ajusta el tamaño si es necesario
         img_light = Image.open(icon_path_light).resize((40, 40))
