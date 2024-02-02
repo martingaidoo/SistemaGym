@@ -119,8 +119,9 @@ class App(customtkinter.CTk):
 
             
             # configure window
-            self.title("Gym Master")
+            self.title("Salud Integral Gym")
             self.geometry(f"{1100}x{580}")
+            self.iconbitmap(r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\logo.ico")
 
             # configure grid layout (4x4)
             self.grid_columnconfigure(1, weight=1)
