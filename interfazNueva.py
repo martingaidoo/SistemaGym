@@ -121,7 +121,7 @@ class App(customtkinter.CTk):
             # configure window
             self.title("Salud Integral Gym")
             self.geometry(f"{1100}x{580}")
-            self.iconbitmap(r"C:\Users\Usuario\Desktop\Laburo\SistemaGym-main\assets\logo.ico")
+            self.iconbitmap("./assets/logo.ico")
 
             # configure grid layout (4x4)
             self.grid_columnconfigure(1, weight=1)
@@ -235,7 +235,6 @@ class App(customtkinter.CTk):
         self.sidebar_button_1.configure(image=self.get_current_icon_button_1())
         self.sidebar_button_2.configure(image=self.get_current_icon_button_2())
         self.sidebar_button_3.configure(image=self.get_current_icon_button_3())
-        self.sidebar_button_4.configure(image=self.get_current_icon_button_4())
         self.sidebar_button_5.configure(image=self.get_current_icon_button_5())
         self.sidebar_button_6.configure(image=self.get_current_icon_button_6())
         self.sidebar_button_7.configure(image=self.get_current_icon_button_7())
@@ -277,7 +276,7 @@ class App(customtkinter.CTk):
         icon_path_dark = "./assets/controlaccesodark.png"
         icon_path2_dark = "./assets/registrarnuevoclientedark.png"
         icon_path3_dark = "./assets/actualizarclientesdark.png"
-        icon_path4_dark = "./assets/consultarcuotasdark.png"
+        #icon_path4_dark = "./assets/consultarcuotasdark.png"
         icon_path5_dark = "./assets/pagocuotadark.png"
         icon_path6_dark = "./assets/actualizarplanesdark.png"
         icon_path7_dark = "./assets/exel.png"
@@ -286,7 +285,7 @@ class App(customtkinter.CTk):
         icon_path_light = "./assets/controlaccesolight.png"
         icon_path2_light = "./assets/registrarnuevoclientelight.png"
         icon_path3_light = "./assets/actualizarclienteslight.png"
-        icon_path4_light = "./assets/consultarcuotaslight.png"
+        #icon_path4_light = "./assets/consultarcuotaslight.png"
         icon_path5_light = "./assets/pagocuotalight.png"
         icon_path6_light = "./assets/actualizarplaneslight.png"
         icon_path7_light = "./assets/exel.png"
@@ -296,7 +295,7 @@ class App(customtkinter.CTk):
         img_light = Image.open(icon_path_light).resize((40, 40))
         img_light2 =Image.open(icon_path2_light).resize((40, 40))
         img_light3 = Image.open(icon_path3_light).resize((40, 40))
-        img_light4 =Image.open(icon_path4_light).resize((40, 40))
+        #img_light4 =Image.open(icon_path4_light).resize((40, 40))
         img_light5 = Image.open(icon_path5_light).resize((40, 40))
         img_light6 =Image.open(icon_path6_light).resize((40, 40))
         img_light7 = Image.open(icon_path7_light).resize((40, 40))
@@ -305,7 +304,7 @@ class App(customtkinter.CTk):
         img_dark = Image.open(icon_path_dark).resize((40, 40))
         img_dark2 = Image.open(icon_path2_dark).resize((40, 40))
         img_dark3 =Image.open(icon_path3_dark).resize((40, 40))
-        img_dark4 = Image.open(icon_path4_dark).resize((40, 40))
+        #img_dark4 = Image.open(icon_path4_dark).resize((40, 40))
         img_dark5 =Image.open(icon_path5_dark).resize((40, 40))
         img_dark6 = Image.open(icon_path6_dark).resize((40, 40))
         img_dark7 =Image.open(icon_path7_dark).resize((40, 40))
@@ -317,7 +316,7 @@ class App(customtkinter.CTk):
         self.icon_image_light = ImageTk.PhotoImage(img_light)
         self.icon_image_light2 = ImageTk.PhotoImage(img_light2)
         self.icon_image_light3 = ImageTk.PhotoImage(img_light3)
-        self.icon_image_light4 = ImageTk.PhotoImage(img_light4)
+        #self.icon_image_light4 = ImageTk.PhotoImage(img_light4)
         self.icon_image_light5 = ImageTk.PhotoImage(img_light5)
         self.icon_image_light6 = ImageTk.PhotoImage(img_light6)
         self.icon_image_light7 = ImageTk.PhotoImage(img_light7)
@@ -326,7 +325,7 @@ class App(customtkinter.CTk):
         self.icon_image_dark = ImageTk.PhotoImage(img_dark)
         self.icon_image_dark2 = ImageTk.PhotoImage(img_dark2)
         self.icon_image_dark3 = ImageTk.PhotoImage(img_dark3)
-        self.icon_image_dark4 = ImageTk.PhotoImage(img_dark4)
+        #self.icon_image_dark4 = ImageTk.PhotoImage(img_dark4)
         self.icon_image_dark5 = ImageTk.PhotoImage(img_dark5)
         self.icon_image_dark6 = ImageTk.PhotoImage(img_dark6)
         self.icon_image_dark7 = ImageTk.PhotoImage(img_dark7)
