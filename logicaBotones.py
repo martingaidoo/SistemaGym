@@ -25,11 +25,51 @@ import sys
 banderaVencimiento = False
 
 def controlAcceso(self):
+        conexion = sqlite3.connect("BaseDatos.db")
+        cursor = conexion.cursor()
+        # Consultar la base de datos para obtener la lista
+        cursor.execute("SELECT Nombre || ' ' || Apellido || ' ' || Documento AS NombreCompleto FROM Clientes")
+        resultados = cursor.fetchall()
+        lista_resultante = [tupla[0] for tupla in resultados]
+        def mostrar_seleccion2(event):
+            selected_indices = lista_resultados_asistencia.curselection()
+            
+            if selected_indices:
+                selected_item = lista_resultados_asistencia.get(selected_indices[0])
+                entry_asistencia.delete(0, tk.END)  # Limpiar el contenido actual
+                entry_asistencia.insert(0, selected_item[-8:])
+
+        def actualizar_resultados2():
+            # Obtiene la entrada actual del cuadro de texto
+            entrada = entry_asistencia.get()
+            # Filtra la lista de nombres y apellidos en función de la entrada
+            resultados_filtrados = [nombre_apellido for nombre_apellido in lista_resultante if entrada in nombre_apellido.lower()]
+            resultados_filtrados = resultados_filtrados[:4]
+            # Borra los elementos actuales en la lista de resultados
+            lista_resultados_asistencia.delete(0, tk.END)
+            # Agrega los nuevos resultados filtrados a la lista
+            for resultado in resultados_filtrados:
+                lista_resultados_asistencia.insert(tk.END, resultado)
+            # Muestra u oculta la lista de resultados en función de si hay resultados
+            if not resultados_filtrados or entry_asistencia.get() == "":
+                lista_resultados_asistencia.grid_forget()  # Cambiado a grid_forget
+            else:
+                lista_resultados_asistencia.grid(row=4, column=1, pady=(20, 0), sticky="nsew")  # Cambiado a grid
+                # Ajusta la altura de la lista de resultados
+                lista_resultados_asistencia.config(height=len(resultados_filtrados))
+            # Programa la próxima ejecución de la función después de 100 milisegundos
+            self.after(100, actualizar_resultados2)
+        global lista_resultados_asistencia
+
+
         self.frame_asistencia = customtkinter.CTkFrame(self, width=250)
         self.frame_asistencia.grid(row=0, rowspan=2, column=1,columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
         self.frame_asistencia.grid_columnconfigure((0,2), weight=2)
         self.frame_asistencia.grid_columnconfigure(1, weight=0)
         self.frame_asistencia.grid_rowconfigure((0, 1,2,3,4), weight=0)
+
+        lista_resultados_asistencia = tk.Listbox(self.frame_asistencia)
+        lista_resultados_asistencia.config(width=20, height=5)
         
         label_titulo = customtkinter.CTkLabel(self.frame_asistencia, text="CONTROL DE ACCESO", font=('Century Gothic',30))
         label_titulo.grid(row=0, column=1, pady=(20, 0), sticky="nsew")
@@ -49,7 +89,9 @@ def controlAcceso(self):
             if entry_asistencia.get() != "":
                 registrarAsistencia(obtener_datos_cliente(entry_asistencia.get()),self),entry_asistencia.delete(0, tk.END)
         #ejecuta la funcion de arriba con apretar el enter
+        actualizar_resultados2()
         self.bind("<Return>", funcion_al_presionar_tecla)
+        lista_resultados_asistencia.bind("<<ListboxSelect>>", mostrar_seleccion2)
 
 
 def registrarCliente(self):
@@ -308,32 +350,68 @@ def actualizarClientes(self):
 
 
 def pagoCuotas(self):
+        conexion = sqlite3.connect("BaseDatos.db")
+        cursor = conexion.cursor()
+        # Consultar la base de datos para obtener la lista
+        cursor.execute("SELECT Nombre || ' ' || Apellido || ' ' || Documento AS NombreCompleto FROM Clientes")
+        resultados = cursor.fetchall()
+        lista_resultante = [tupla[0] for tupla in resultados]
+        def mostrar_seleccion3(event):
+            selected_indices = lista_resultados_pago.curselection()
+            
+            if selected_indices:
+                selected_item = lista_resultados_pago.get(selected_indices[0])
+                entry_cliente.delete(0, tk.END)  # Limpiar el contenido actual
+                entry_cliente.insert(0, selected_item[-8:])
+
+        def actualizar_resultados3():
+            # Obtiene la entrada actual del cuadro de texto
+            entrada = entry_cliente.get()
+            # Filtra la lista de nombres y apellidos en función de la entrada
+            resultados_filtrados = [nombre_apellido for nombre_apellido in lista_resultante if entrada in nombre_apellido.lower()]
+            resultados_filtrados = resultados_filtrados[:4]
+            # Borra los elementos actuales en la lista de resultados
+            lista_resultados_pago.delete(0, tk.END)
+            # Agrega los nuevos resultados filtrados a la lista
+            for resultado in resultados_filtrados:
+                lista_resultados_pago.insert(tk.END, resultado)
+            # Muestra u oculta la lista de resultados en función de si hay resultados
+            if not resultados_filtrados or entry_cliente.get() == "":
+                lista_resultados_pago.grid_forget()  # Cambiado a grid_forget
+            else:
+                lista_resultados_pago.grid(row=2, column=2, pady=(0, 0), sticky="nsew")  # Cambiado a grid
+                # Ajusta la altura de la lista de resultados
+                lista_resultados_pago.config(height=len(resultados_filtrados))
+            # Programa la próxima ejecución de la función después de 100 milisegundos
+            self.after(100, actualizar_resultados3)
+
         self.frame_pagoCuota = customtkinter.CTkFrame(self, width=250)
         self.frame_pagoCuota.grid(row=0, rowspan=2, column=1,columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
         self.frame_pagoCuota.grid_columnconfigure((0,2), weight=1)
         self.frame_pagoCuota.grid_columnconfigure(1, weight=0)
         self.frame_pagoCuota.grid_rowconfigure((0, 1, 2), weight=0)
 
+        global lista_resultados_pago
+        lista_resultados_pago = tk.Listbox(self.frame_pagoCuota)
+        lista_resultados_pago.config(width=20, height=5)
+
     #LABEL TITULO
         label_titulo = customtkinter.CTkLabel(self.frame_pagoCuota, text="PAGO DE CUOTA", font=('Century Gothic',20))
-        label_titulo.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        label_titulo.grid(row=0, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
 
         #Entradas
         label_cliente = customtkinter.CTkLabel(self.frame_pagoCuota, text="documento", font=('Century Gothic',15))
-        label_cliente.grid(row=1, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        label_cliente.grid(row=1, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
 
         entry_cliente = customtkinter.CTkEntry(self.frame_pagoCuota, width=220, height=25, corner_radius=10)
-        entry_cliente.grid(row=2, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        entry_cliente.grid(row=2, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
 
         label_programa = customtkinter.CTkLabel(self.frame_pagoCuota, text="Programa", font=('Century Gothic',15))
-        label_programa.grid(row=3, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        label_programa.grid(row=3, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
 
         conexion = sqlite3.connect('BaseDatos.db')
         cursor = conexion.cursor()
 
-        
-        
-        
         #menu_desplegable = ttk.Combobox(self.frame_pagoCuota, width=35, height=25)
 
         # Obtener los nombres de los clientes desde la base de datos
@@ -345,27 +423,28 @@ def pagoCuotas(self):
         menu_desplegable = customtkinter.CTkComboBox(self.frame_pagoCuota, values=lista_nombres, variable="")
 
         # Mostrar el menú desplegable
-        menu_desplegable.grid(row=4, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        menu_desplegable.grid(row=4, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
 
 
         label_pago = customtkinter.CTkLabel(self.frame_pagoCuota, text="Pago $", font=('Century Gothic',15))
-        label_pago.grid(row=5, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        label_pago.grid(row=5, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
         entry_pago = customtkinter.CTkEntry(self.frame_pagoCuota, width=120, height=25, corner_radius=10)
-        entry_pago.grid(row=6, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        entry_pago.grid(row=6, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
 
         label_profesor = customtkinter.CTkLabel(self.frame_pagoCuota, text="Profesor", font=('Century Gothic',15))
-        label_profesor.grid(row=7, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        label_profesor.grid(row=7, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
         entry_profesor = customtkinter.CTkEntry(self.frame_pagoCuota, width=220, height=25, corner_radius=10)
-        entry_profesor.grid(row=8, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        entry_profesor.grid(row=8, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
 
-        
         button_confirmar = customtkinter.CTkButton(
             self.frame_pagoCuota,
             width=220,
             text="Confirmar",
             command=lambda: (registrarPago([entry_cliente.get(), entry_pago.get(), menu_desplegable.get(), entry_profesor.get()]), self.frame_pagos.pack(pady=60),self.frame_pagoCuota.pack_forget()),corner_radius=6)
-        button_confirmar.grid(row=9, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
-
+        button_confirmar.grid(row=9, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
+        
+        actualizar_resultados3()
+        lista_resultados_pago.bind("<<ListboxSelect>>", mostrar_seleccion3)
 
 def actualizarPrecio(self):
     
@@ -499,7 +578,6 @@ def buscarCliente(self):
 def mostrarResultados(self):
     conexion = sqlite3.connect("BaseDatos.db")
     cursor = conexion.cursor()
-
     # Consultar la base de datos para obtener la lista
     cursor.execute("SELECT Nombre || ' ' || Apellido || ' ' || Documento AS NombreCompleto FROM Clientes")
     resultados = cursor.fetchall()
@@ -542,6 +620,7 @@ def mostrarResultados(self):
     self.entry.grid(row=3, column=0, padx=(20, 20), pady=(20, 20), sticky="nsew")
     self.main_button_1 = customtkinter.CTkButton(master=self,text="Buscar", fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"), command=lambda:(fichacliente(self.entry.get()[-8:])))
     self.main_button_1.grid(row=3, column=1, padx=(20, 20), pady=(20, 20), sticky="nsew")
+    
     actualizar_resultados()
 
     lista_resultados.bind("<<ListboxSelect>>", mostrar_seleccion)
@@ -679,7 +758,7 @@ def fichacliente(documento):
 
                 label_plan = customtkinter.CTkLabel(self.buscarFichas_frame, text="PLAN", fg_color="gray")
                 label_plan.grid(row=1, column=0, pady=(10, 10), sticky="nsew")
-                print(cuota[2])
+        
                 label_planSeleccion = customtkinter.CTkLabel(self.buscarFichas_frame, text=cuota[2], fg_color="transparent")
                 label_planSeleccion.grid(row=2, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
 
