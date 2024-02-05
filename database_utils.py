@@ -87,7 +87,9 @@ def registrarAsistencia(datos, self):
             self.frame_asistencia.after(7000, timerBandera) 
             self.frame_asistencia.after(8000, lambda: (funcion_despues_del_temporizador(label_vencido)))
             #esto va a de al dia de abajo
+            #ruido de vencimiento 
     if (fecha_actual < fecha_vencimiento):
+        #ruido de cuota al dia
         banderaDestroy = False
         if (fecha_vencimiento-fecha_actual).days <= 5:
             label_vence = customtkinter.CTkLabel(self.frame_asistencia, text=f"VENCE EN {(fecha_vencimiento-fecha_actual).days} DÍAS", fg_color="yellow")
