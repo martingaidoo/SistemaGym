@@ -14,9 +14,9 @@ from tkinter import messagebox
 fecha_actual = datetime.now()
 
 fecha_con_mes_adicional = fecha_actual + relativedelta(months=1)
-
 # Formatear la fecha como días/mes/año
 actual = fecha_actual.strftime("%d/%m/%Y")
+
 actaulMasMes = fecha_con_mes_adicional.strftime("%d/%m/%Y")
 #sirve para destrouit la ventada de la asistencia del cliente
 banderaDestroy = True
@@ -162,8 +162,8 @@ def registrarPago(data):
     mixconexion = sqlite3.connect("BaseDatos.db")
     cursor = mixconexion.cursor()
     # Obtener los datos del cliente
-    print(data)
-    documento, Haber, Plan, Profesor= data
+
+    documento, Haber, Plan, Profesor, tipoVencimiento= data
     cobro = Haber
 
     consulta = """
@@ -188,13 +188,13 @@ def registrarPago(data):
     cursor.execute(consulta, (id_cliente,)) 
     datos_cuota = cursor.fetchone()
 
-    #datos de las fechas de la cuota que existe para verificar si esta vendico
+    #datos de las fechas de la cuota que existe para verificar si esta vencido
     if not (datos_cuota == None):
         fecha_actual = datetime.strptime(actual, "%d/%m/%Y")
         fecha_vencimiento = datetime.strptime(datos_cuota[5], "%d/%m/%Y")
 
     # Verificar que ningún dato esté vacío
-    if id_cliente and Haber and Plan and Profesor:
+    if id_cliente and Haber and Plan and Profesor and tipoVencimiento:
         #variable que verifica si es el primer pago que hace
         if datos_cuota == None:
             try:
@@ -212,16 +212,22 @@ def registrarPago(data):
             conexion = sqlite3.connect("BaseDatos.db")
             cursor = conexion.cursor()
             Haber = str(int(datos_programa[2])-int(Haber) + int(datos_cuota[1]))
-            cursor.execute("UPDATE Cuotas SET Haber = ?, PLAN = ?, PROFESOR = ?, Fecha = ?, Vencimiento = ?, id_programa = ? WHERE id_cliente = ?",
-                        (Haber, Plan, Profesor, actual, actaulMasMes, id_programa, id_cliente))
-            conexion.commit()
+            if tipoVencimiento == "Fecha actual":
+                cursor.execute("UPDATE Cuotas SET Haber = ?, PLAN = ?, PROFESOR = ?, Fecha = ?, Vencimiento = ?, id_programa = ? WHERE id_cliente = ?",
+                            (Haber, Plan, Profesor, actual, actaulMasMes, id_programa, id_cliente))
+                conexion.commit()
+            else:
+                fecha_vencimiento_con_mes_adicional = fecha_vencimiento + relativedelta(months=1)
+                vencimientoMasMes = fecha_vencimiento_con_mes_adicional.strftime("%d/%m/%Y")
+                cursor.execute("UPDATE Cuotas SET Haber = ?, PLAN = ?, PROFESOR = ?, Fecha = ?, Vencimiento = ?, id_programa = ? WHERE id_cliente = ?",
+                            (Haber, Plan, Profesor, actual, vencimientoMasMes, id_programa, id_cliente))
+                conexion.commit()
         
     #para cuando la cuota no este vencida y exista
         if not (datos_cuota == None) and (fecha_actual < fecha_vencimiento):
             conexion = sqlite3.connect("BaseDatos.db")
             cursor = conexion.cursor()
             Haber = str(-int(Haber) + int(datos_cuota[1]))
-            print("entre")
             cursor.execute("UPDATE Cuotas SET Haber = ?, PLAN = ?, PROFESOR = ?,  id_programa = ? WHERE id_cliente = ?",
                         (Haber, Plan, Profesor, id_programa, id_cliente))
             conexion.commit()

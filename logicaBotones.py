@@ -397,17 +397,17 @@ def pagoCuotas(self):
 
     #LABEL TITULO
         label_titulo = customtkinter.CTkLabel(self.frame_pagoCuota, text="PAGO DE CUOTA", font=('Century Gothic',20))
-        label_titulo.grid(row=0, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
+        label_titulo.grid(row=0, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
 
         #Entradas
         label_cliente = customtkinter.CTkLabel(self.frame_pagoCuota, text="documento", font=('Century Gothic',15))
-        label_cliente.grid(row=1, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
+        label_cliente.grid(row=1, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
 
         entry_cliente = customtkinter.CTkEntry(self.frame_pagoCuota, width=220, height=25, corner_radius=10)
-        entry_cliente.grid(row=2, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
+        entry_cliente.grid(row=2, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
 
         label_programa = customtkinter.CTkLabel(self.frame_pagoCuota, text="Programa", font=('Century Gothic',15))
-        label_programa.grid(row=3, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
+        label_programa.grid(row=3, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
 
         conexion = sqlite3.connect('BaseDatos.db')
         cursor = conexion.cursor()
@@ -423,25 +423,36 @@ def pagoCuotas(self):
         menu_desplegable = customtkinter.CTkComboBox(self.frame_pagoCuota, values=lista_nombres, variable="")
 
         # Mostrar el menú desplegable
-        menu_desplegable.grid(row=4, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
+        menu_desplegable.grid(row=4, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
+
+        label_vencimiento = customtkinter.CTkLabel(self.frame_pagoCuota, text="Vencimiento", font=('Century Gothic',15))
+        label_vencimiento.grid(row=5, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
+
+        # Agregar los nombres al menú desplegable
+        lista_vencimiento = ["Fecha actual", "Ultimo vencimiento"]
+
+        menu_vencimiento = customtkinter.CTkComboBox(self.frame_pagoCuota, values=lista_vencimiento, variable="")
+
+        # Mostrar el menú desplegable
+        menu_vencimiento.grid(row=6, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
 
 
         label_pago = customtkinter.CTkLabel(self.frame_pagoCuota, text="Pago $", font=('Century Gothic',15))
-        label_pago.grid(row=5, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
+        label_pago.grid(row=7, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
         entry_pago = customtkinter.CTkEntry(self.frame_pagoCuota, width=120, height=25, corner_radius=10)
-        entry_pago.grid(row=6, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
+        entry_pago.grid(row=8, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
 
         label_profesor = customtkinter.CTkLabel(self.frame_pagoCuota, text="Profesor", font=('Century Gothic',15))
-        label_profesor.grid(row=7, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
+        label_profesor.grid(row=9, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
         entry_profesor = customtkinter.CTkEntry(self.frame_pagoCuota, width=220, height=25, corner_radius=10)
-        entry_profesor.grid(row=8, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
+        entry_profesor.grid(row=10, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
 
         button_confirmar = customtkinter.CTkButton(
             self.frame_pagoCuota,
             width=220,
             text="Confirmar",
-            command=lambda: (registrarPago([entry_cliente.get(), entry_pago.get(), menu_desplegable.get(), entry_profesor.get()]), self.frame_pagos.pack(pady=60),self.frame_pagoCuota.pack_forget()),corner_radius=6)
-        button_confirmar.grid(row=9, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
+            command=lambda: (registrarPago([entry_cliente.get(), entry_pago.get(), menu_desplegable.get(), entry_profesor.get(), menu_vencimiento.get()]), self.frame_pagos.pack(pady=60),self.frame_pagoCuota.pack_forget()),corner_radius=6)
+        button_confirmar.grid(row=11, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
         
         actualizar_resultados3()
         lista_resultados_pago.bind("<<ListboxSelect>>", mostrar_seleccion3)
