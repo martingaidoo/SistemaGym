@@ -80,6 +80,7 @@ class App(customtkinter.CTk):
             icon_path6 = "./assets/actualizarplanesdark.png"
             icon_path7 = "./assets/cajadark.png"
             icon_path8 = "./assets/exel.png"
+            icon_path9 = "./assets/asistenciasDark.png"
             icon_pathbuscarficha = "./assets/buscardark.png"
 
             new_size = (40, 40)
@@ -98,6 +99,8 @@ class App(customtkinter.CTk):
             img_7 = img_7.resize(new_size)
             img_8 = Image.open(icon_path8)
             img_8 = img_8.resize(new_size)
+            img_9 = Image.open(icon_path9)
+            img_9 = img_9.resize(new_size)
             imgbuscarficha = Image.open(icon_pathbuscarficha)
             imgbuscarficha = imgbuscarficha.resize(new_size)
             
@@ -119,6 +122,7 @@ class App(customtkinter.CTk):
             icon_image_6 = ImageTk.PhotoImage(img_6)
             icon_image_7 = ImageTk.PhotoImage(img_7)
             icon_image_8 = ImageTk.PhotoImage(img_8)
+            icon_image_9 = ImageTk.PhotoImage(img_9)
             icon_imagenbuscarficha = ImageTk.PhotoImage(imgbuscarficha)
 
             
@@ -135,16 +139,16 @@ class App(customtkinter.CTk):
             # create sidebar frame with widgets
             self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
             self.sidebar_frame.grid(row=0, column=0, rowspan=8, sticky="nsew")
-            self.sidebar_frame.grid_rowconfigure(8, weight=1)
+            self.sidebar_frame.grid_rowconfigure(9, weight=1)
             self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="Salud Integral", font=customtkinter.CTkFont(size=20, weight="bold"))
-            self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
+            self.logo_label.grid(row=0, column=0, padx=20, pady=(10, 10))
             self.sidebar_button_1 = customtkinter.CTkLabel(self.sidebar_frame, image=self.icon_image, text="Control de acceso", compound="top")
             self.sidebar_button_1.bind("<Button-1>", lambda event: controlAcceso(self))
             self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
 
             self.sidebar_button_2 = customtkinter.CTkLabel(self.sidebar_frame, image=icon_image_2, text="Registrar nuevo cliente", compound="top")
             self.sidebar_button_2.bind("<Button-1>", lambda event: (registrarCliente(self)))
-            self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=20)
+            self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
             self.sidebar_button_3 = customtkinter.CTkLabel(self.sidebar_frame, image=icon_image_3, text="Actualizar Clientes", compound="top")
             self.sidebar_button_3.bind("<Button-1>", lambda event: (actualizarClientes(self)))
             self.sidebar_button_3.grid(row=3, column=0, padx=20, pady=10)
@@ -164,25 +168,27 @@ class App(customtkinter.CTk):
             self.sidebar_button_8 = customtkinter.CTkLabel(self.sidebar_frame, image=icon_image_8, text="Generar Excel", compound="top")
             self.sidebar_button_8.bind("<Button-1>", lambda event: (generar_completo()))
             self.sidebar_button_8.grid(row=7, column=0, padx=20, pady=10)
-            #simplemente se hace invisible este boton para que genere un espacio
-            self.sidebar_button_9 = customtkinter.CTkButton(self.sidebar_frame, command=lambda:(self.sidebar_button_event), text="Hace click")
-            self.sidebar_button_9.grid(row=8, column=0, padx=20, pady=(5,5))
-            self.sidebar_button_9.grid_forget()
+  
+
+            self.sidebar_button_9 = customtkinter.CTkLabel(self.sidebar_frame, image=icon_image_9, text="Asistencias", compound="top")
+            self.sidebar_button_9.bind("<Button-1>", lambda event: (asistencias(self)))
+            self.sidebar_button_9.grid(row=8, column=0, padx=20, pady=10)
+            
             #
             self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Color fondo", anchor="w")
             self.appearance_mode_label.grid(row=9, column=0, padx=20, pady=(10, 0))
             self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=["Light", "Dark", "System"],
                                                                         command=self.change_appearance_mode_event)
-            self.appearance_mode_optionemenu.grid(row=10, column=0, padx=20, pady=(10, 10))
+            self.appearance_mode_optionemenu.grid(row=10, column=0, padx=20, pady=(10, 0))
             self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="Escala UI:", anchor="w")
             self.scaling_label.grid(row=11, column=0, padx=20, pady=(10, 0))
             self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=["80%", "90%", "100%", "110%", "120%"],
                                                                 command=self.change_scaling_event)
-            self.scaling_optionemenu.grid(row=12, column=0, padx=20, pady=(10, 20))
+            self.scaling_optionemenu.grid(row=12, column=0, padx=20, pady=(10, 0))
 
             # create main entry and button
             self.buscarFichas_frame = customtkinter.CTkFrame(self, width=140, corner_radius=6)
-            self.buscarFichas_frame.grid(row=3, column=1, columnspan=3, padx=(20, 0), pady=(10, 10), sticky="nsew")
+            self.buscarFichas_frame.grid(row=3, column=1, columnspan=3, padx=(20, 0), pady=(10, 0), sticky="nsew")
             mostrarResultados(self.buscarFichas_frame)
             # create tabview
             self.tabview = customtkinter.CTkTabview(self, width=250)
@@ -223,7 +229,7 @@ class App(customtkinter.CTk):
                     
 
                 # set default values
-                self.sidebar_button_9.configure(state="disabled", text="Este boton no lo podes clickear")
+                #self.sidebar_button_9.configure(state="disabled", text="Este boton no lo podes clickear")
                 #self.scrollable_frame_switches[0].select()
                 #self.scrollable_frame_switches[4].select()
                 self.appearance_mode_optionemenu.set("Dark")
@@ -248,6 +254,7 @@ class App(customtkinter.CTk):
         self.sidebar_button_5.configure(image=self.get_current_icon_button_5())
         self.sidebar_button_6.configure(image=self.get_current_icon_button_6())
         self.sidebar_button_7.configure(image=self.get_current_icon_button_7())
+        self.sidebar_button_9.configure(image=self.get_current_icon_button_9())
         self.buscarFichas_frame.configure(image=self.get_current_icon_button_buscarficha())
         
         
@@ -275,6 +282,9 @@ class App(customtkinter.CTk):
     def get_current_icon_button_8(self):
         # Devuelve el icono correspondiente al modo actual para el botón 1
         return self.icon_image_light8 if self.interface_mode == "light" else self.icon_image_dark8
+    def get_current_icon_button_9(self):
+        # Devuelve el icono correspondiente al modo actual para el botón 1
+        return self.icon_image_light9 if self.interface_mode == "light" else self.icon_image_dark9
     def get_current_icon_button_buscarficha(self):
         # Devuelve el icono correspondiente al modo actual para el botón 1
         return self.icon_image_lightbuscar if self.interface_mode == "light" else self.icon_image_darkbuscar
@@ -294,6 +304,7 @@ class App(customtkinter.CTk):
         icon_path6_dark = "./assets/actualizarplanesdark.png"
         icon_path7_dark = "./assets/cajadark.png"
         icon_path8_dark = "./assets/exel.png"
+        icon_path9_dark = "./assets/asistenciasDark.png"
         icon_path_darkbuscar = "./assets/buscardark.png"
 
         icon_path_light = "./assets/controlaccesolight.png"
@@ -304,6 +315,7 @@ class App(customtkinter.CTk):
         icon_path6_light = "./assets/actualizarplaneslight.png"
         icon_path7_light = "./assets/cajalight.png"
         icon_path8_light = "./assets/exel.png"
+        icon_path9_light = "./assets/asistenciasLight.png"
         icon_path_lightbuscar = "./assets/buscarlight.png"
 
         # Abre las imágenes con Pillow y ajusta el tamaño si es necesario
@@ -315,6 +327,7 @@ class App(customtkinter.CTk):
         img_light6 =Image.open(icon_path6_light).resize((40, 40))
         img_light7 = Image.open(icon_path7_light).resize((40, 40))
         img_light8 = Image.open(icon_path8_light).resize((40, 40))
+        img_light9 = Image.open(icon_path9_light).resize((40, 40))
         img_buscarlight = Image.open(icon_path_lightbuscar).resize((40, 40))
         
         img_dark = Image.open(icon_path_dark).resize((40, 40))
@@ -325,6 +338,7 @@ class App(customtkinter.CTk):
         img_dark6 = Image.open(icon_path6_dark).resize((40, 40))
         img_dark7 = Image.open(icon_path7_dark).resize((40, 40))
         img_dark8 =Image.open(icon_path8_dark).resize((40, 40))
+        img_dark9 = Image.open(icon_path9_dark).resize((40, 40))
         img_buscardark = Image.open(icon_path_darkbuscar).resize((40, 40))
         
         
@@ -338,6 +352,7 @@ class App(customtkinter.CTk):
         self.icon_image_light6 = ImageTk.PhotoImage(img_light6)
         self.icon_image_light7 = ImageTk.PhotoImage(img_light7)
         self.icon_image_light8 = ImageTk.PhotoImage(img_light8)
+        self.icon_image_light9 = ImageTk.PhotoImage(img_light9)
         self.icon_image_lightbuscar = ImageTk.PhotoImage(img_buscarlight)
         
         self.icon_image_dark = ImageTk.PhotoImage(img_dark)
@@ -348,6 +363,7 @@ class App(customtkinter.CTk):
         self.icon_image_dark6 = ImageTk.PhotoImage(img_dark6)
         self.icon_image_dark7 = ImageTk.PhotoImage(img_dark7)
         self.icon_image_dark8 = ImageTk.PhotoImage(img_dark8)
+        self.icon_image_dark9 = ImageTk.PhotoImage(img_dark9)
         self.icon_image_darkbuscar = ImageTk.PhotoImage(img_buscardark)
         
 

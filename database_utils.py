@@ -11,8 +11,9 @@ from dateutil.relativedelta import relativedelta
 from tkinter import messagebox
 
 # Obtener la fecha actual
-fecha_actual = datetime.now()
 
+fecha_actual = datetime.now()
+actualFechaHora = fecha_actual.strftime("%d/%m/%Y %H:%M:%S")
 fecha_con_mes_adicional = fecha_actual + relativedelta(months=1)
 # Formatear la fecha como días/mes/año
 actual = fecha_actual.strftime("%d/%m/%Y")
@@ -69,6 +70,7 @@ def registrarAsistencia(datos, self):
         banderaDestroy = True
     id_cliente,apellido,nombre, documento, correo, fecha_nacimiento, telefono, id_cuota, deuda, plan, profesor, fecha, vencimiento, id_cliente2, id_cuota = datos
     fecha_vencimiento = datetime.strptime(vencimiento, "%d/%m/%Y")
+    
     fecha_actual = datetime.strptime(actual, "%d/%m/%Y")
     #esto va a ser la imagen de la asistencia del cliente
     img_vencido = customtkinter.CTkImage(light_image=Image.open("./assets/casiVencidaLight.png"),
@@ -112,8 +114,10 @@ def registrarAsistencia(datos, self):
         label_deuda.grid(row=6, column=1, pady=(0, 0), sticky="nsew")
     conn = sqlite3.connect("BaseDatos.db")
     cursor = conn.cursor()
+    
     cursor.execute("INSERT INTO Asistencia (Cliente, Fecha) VALUES (?, ?)",
-                        (id_cliente, actual))
+                        (id_cliente, actualFechaHora))
+    print(actualFechaHora)
     conn.commit()
     conn.close()
 

@@ -35,29 +35,31 @@ class TablaDatos(tk.Tk):
         self.cal_fin = Calendar(self, date_pattern="yyyy-mm-dd", width=180, height=120)
         self.cal_fin.grid(column=1, row=1, padx=(20,20), pady=(20, 20))
 
+        entry = customtkinter.CTkEntry(self, placeholder_text="Documento")
+        entry.grid(column=0, row=2, padx=(20,20), pady=(20, 20))
+
         # Botón para actualizar la tabla
-        self.btn_actualizar = customtkinter.CTkButton(self, text="Actualizar", command=self.actualizar_tabla)
-        self.btn_actualizar.grid(column=0, columnspan=2, row=2, padx=(20,20), pady=(20, 20))
+        self.btn_actualizar = customtkinter.CTkButton(self, text="Actualizar", command=lambda: (self.actualizar_tabla(entry.get())))
+        self.btn_actualizar.grid(column=1, row=2, padx=(20,20), pady=(20, 20))
 
         # Crear tabla
-        self.tree = ttk.Treeview(self, columns=("Nombre", "Cobro", "Fecha", "Profesor"), show="headings")
+        self.tree = ttk.Treeview(self, columns=("Nombre", "Fecha", "Hora", "Estado"), show="headings")
         self.tree.heading("Nombre", text="Nombre")
-        self.tree.heading("Cobro", text="Cobro")
         self.tree.heading("Fecha", text="Fecha")
-        self.tree.heading("Profesor", text="Profesor")
+        self.tree.heading("Hora", text="Hora")
+        self.tree.heading("Estado", text="Estado")
         self.tree.grid(column=0, columnspan=2, row=3, sticky="nsew")
 
         # Obtener datos de la base de datos
-        self.obtener_datos()
+        self.obtener_datos(entry.get())
 
-    def obtener_datos(self):
+    def obtener_datos(self, entradaDocumento):
         # Obtener fechas seleccionadas
-        print("entreee")
         fecha_inicio = self.cal_inicio.get_date()
         fecha_fin = self.cal_fin.get_date()
 
         # Ejecutar consulta para obtener datos de la tabla Cobro en el rango de fechas
-        self.cursor.execute("SELECT id_cliente, cobro, fecha, profesor  FROM Cobro ORDER BY fecha DESC")
+        self.cursor.execute("SELECT id, Cliente, Fecha FROM Asistencia ORDER BY fecha DESC")
 
         # Limpiar tabla antes de actualizar
         for row in self.tree.get_children():
@@ -69,18 +71,46 @@ class TablaDatos(tk.Tk):
 
             fecha1_datetime = datetime.strptime(fecha_inicio, "%Y-%m-%d")
             fecha2_datetime = datetime.strptime(fecha_fin, "%Y-%m-%d")
-            fechaCobro = datetime.strptime(row[2], "%d/%m/%Y")          
-            if fecha1_datetime <= fechaCobro >= fecha1_datetime:
-                id_cliente = row[0]
-                self.cursor.execute("SELECT Nombre, Apellido FROM Clientes WHERE id=?", (id_cliente,))
-                nombre_cliente, apellido_cliente = self.cursor.fetchone()
-                nombre_completo = nombre_cliente + " " + apellido_cliente
-                # Añadir datos a la tabla
-                self.tree.insert("", 0, values=(nombre_completo, row[1], row[2], row[3]))
+            fechaAsistencia, horaAsistencia = row[2].split()
+            fechaAsistencia2 = datetime.strptime(fechaAsistencia, "%d/%m/%Y")
+            horaAsistencia2 = datetime.strptime(horaAsistencia, "%H:%M:%S")
 
-    def actualizar_tabla(self):
+            if fecha1_datetime <= fechaAsistencia2 <= fecha2_datetime:
+                id_cliente = row[1]
+
+                self.cursor.execute("SELECT Nombre, Apellido, Documento FROM Clientes WHERE id=?", (id_cliente,))
+
+                nombre_cliente, apellido_cliente, documento= self.cursor.fetchone()
+
+                nombre_completo = nombre_cliente + " " + apellido_cliente
+                if entradaDocumento == "":
+                    self.cursor.execute("SELECT Vencimiento FROM Cuotas WHERE id_cliente=?", (id_cliente,))
+                    vencimiento = self.cursor.fetchone()
+                    actual = datetime.now()
+                    actualformateado_datetime = datetime.strptime(actual.strftime("%d/%m/%Y"), "%d/%m/%Y")
+                    vencimientoformateado = datetime.strptime(vencimiento[0], "%d/%m/%Y")
+                    if  vencimientoformateado >= actualformateado_datetime:
+                        # Añadir datos a la tabla
+                        self.tree.insert("", 0, values=(nombre_completo, fechaAsistencia, horaAsistencia, "Al dia"))
+                    else:
+                        self.tree.insert("", 0, values=(nombre_completo, fechaAsistencia, horaAsistencia, "Vencido"))
+                else:
+                    if int(entradaDocumento) == int(documento):
+                        self.cursor.execute("SELECT Vencimiento FROM Cuotas WHERE id_cliente=?", (id_cliente,))
+                        vencimiento = self.cursor.fetchone()
+                        actual = datetime.now()
+                        actualformateado_datetime = datetime.strptime(actual.strftime("%d/%m/%Y"), "%d/%m/%Y")
+                        vencimientoformateado = datetime.strptime(vencimiento[0], "%d/%m/%Y")
+                        if  vencimientoformateado >= actualformateado_datetime:
+                            # Añadir datos a la tabla
+                            self.tree.insert("", 0, values=(nombre_completo, fechaAsistencia, horaAsistencia, "Al dia"))
+                        else:
+                            self.tree.insert("", 0, values=(nombre_completo, fechaAsistencia, horaAsistencia, "Vencido"))
+
+
+    def actualizar_tabla(self, entradaDocumento):
         # Obtener y actualizar datos según el rango de fechas seleccionado
-        self.obtener_datos()
+        self.obtener_datos(entradaDocumento)
 
 if __name__ == "__main__":
     app = TablaDatos()
