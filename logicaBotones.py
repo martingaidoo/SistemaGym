@@ -245,29 +245,30 @@ def actualizarClientes(self):
                 self.lista_programas.delete(0, ctk.END)
                 programas = self.cursor.execute('SELECT * FROM Clientes').fetchall()
                 for programa in programas:
-                    id, nombre, apellido, correo, documento, fechaNacimiento, telefono = programa  # Obtener los dos últimos elementos de la tupla
-                    consulta = """
-                    SELECT * FROM Cuotas id_cliente WHERE id_cliente = ?;
-                    """
-                    self.cursor.execute(consulta, (id,)) 
-                    datos_cuota = self.cursor.fetchone()
-                    if banderaVencimiento == False:
-                        if datos_cuota:
-                            idCuota,deuda,plan,profesor,inicio,vencimiento,idCliente,idProfesor = datos_cuota
-                            self.lista_programas.insert(ctk.END, (apellido, nombre, documento, correo, fechaNacimiento, telefono, deuda, plan, inicio,vencimiento))
-                        else:
-                            deuda=""
-                            plan=""
-                            inicio=""
-                            vencimiento=""
-                            self.lista_programas.insert(ctk.END, (apellido, nombre, documento, correo, fechaNacimiento, telefono, deuda, plan, inicio,vencimiento))
-                    if banderaVencimiento == True:
-                        if datos_cuota:
-                            fecha_actual = datetime.strptime(actual, "%d/%m/%Y")
-                            fecha_vencimiento = datetime.strptime(datos_cuota[5], "%d/%m/%Y")
-                            if fecha_actual >= fecha_vencimiento:
+                    id, nombre, apellido, correo, documento, fechaNacimiento, telefono, Estado = programa  # Obtener los dos últimos elementos de la tupla
+                    if int(Estado) == 1:
+                        consulta = """
+                        SELECT * FROM Cuotas id_cliente WHERE id_cliente = ?;
+                        """
+                        self.cursor.execute(consulta, (id,)) 
+                        datos_cuota = self.cursor.fetchone()
+                        if banderaVencimiento == False:
+                            if datos_cuota:
                                 idCuota,deuda,plan,profesor,inicio,vencimiento,idCliente,idProfesor = datos_cuota
                                 self.lista_programas.insert(ctk.END, (apellido, nombre, documento, correo, fechaNacimiento, telefono, deuda, plan, inicio,vencimiento))
+                            else:
+                                deuda=""
+                                plan=""
+                                inicio=""
+                                vencimiento=""
+                                self.lista_programas.insert(ctk.END, (apellido, nombre, documento, correo, fechaNacimiento, telefono, deuda, plan, inicio,vencimiento))
+                        if banderaVencimiento == True:
+                            if datos_cuota:
+                                fecha_actual = datetime.strptime(actual, "%d/%m/%Y")
+                                fecha_vencimiento = datetime.strptime(datos_cuota[5], "%d/%m/%Y")
+                                if fecha_actual >= fecha_vencimiento:
+                                    idCuota,deuda,plan,profesor,inicio,vencimiento,idCliente,idProfesor = datos_cuota
+                                    self.lista_programas.insert(ctk.END, (apellido, nombre, documento, correo, fechaNacimiento, telefono, deuda, plan, inicio,vencimiento))
 
 
             def actualizar(self):
@@ -645,6 +646,18 @@ def fichacliente(documento):
     fecha_nacimiento = datetime.strptime(cliente[5], "%d/%m/%Y")
     fecha_actual = datetime.strptime(actual, "%d/%m/%Y")
     edad = fecha_actual.year - fecha_nacimiento.year - ((fecha_actual.month, fecha_actual.day) < (fecha_nacimiento.month, fecha_nacimiento.day))
+    
+    def darAltaBaja(valor, id_cli):
+        conexion = sqlite3.connect("BaseDatos.db")
+        cursor = conexion.cursor()
+        if valor:
+            cursor.execute("UPDATE Clientes SET Estado = ? WHERE id = ?",
+                    ("1", id_cli))
+            conexion.commit()
+        else:
+            cursor.execute("UPDATE Clientes SET Estado = ? WHERE id = ?",
+                    ("0", id_cli))
+            conexion.commit()
 
     class aplicacion(ctk.CTk):
         def __init__(self):
@@ -787,9 +800,15 @@ def fichacliente(documento):
                 label_Deuda.grid(row=1, column=3, pady=(10, 10), sticky="nsew")
                 label_Deudaseleccion = customtkinter.CTkLabel(self.buscarFichas_frame, text=cuota[1], fg_color="transparent")
                 label_Deudaseleccion.grid(row=2, column=3, padx=(100, 100), pady=(10, 10), sticky="nsew")
+                
+                if int(cliente[7]) == 1:
+                    boton_baja = customtkinter.CTkButton(self.buscarFichas_frame, text="Dar de Baja", command=lambda:(darAltaBaja(False, cliente[0]), self.destroy()), fg_color="red", hover_color="#FF5555")
+                    boton_baja.grid(row=4, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
+                else:
+                    boton_alta = customtkinter.CTkButton(self.buscarFichas_frame, text="Dar de Alta", command=lambda:(darAltaBaja(True, cliente[0]), self.destroy()), fg_color="green", hover_color="#00FF00")
+                    boton_alta.grid(row=4, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
 
-                boton_baja = customtkinter.CTkButton(self.buscarFichas_frame, text="Dar de Baja", command=lambda:(self.destroy()), fg_color= "red", hover_color="#FF5555")
-                boton_baja.grid(row=4, column=0,padx=(10, 10), pady=(10, 10), sticky="nsew")
+
 
 
 
