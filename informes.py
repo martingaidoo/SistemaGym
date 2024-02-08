@@ -31,7 +31,7 @@ def generar_completo():
     conn = sqlite3.connect("BaseDatos.db")
 
     # Consulta SQL para obtener solo las columnas necesarias de la tabla "Clientes"
-    consulta_clientes = "SELECT id, Apellido, Nombre, Documento, Telefono, Correo, Fecha_Nacimiento FROM Clientes;"
+    consulta_clientes = "SELECT id, Apellido, Nombre, Documento, Telefono, Correo, Fecha_Nacimiento, estado FROM Clientes;"
 
     # Consulta SQL para obtener solo las columnas necesarias de la tabla "Cuotas"
     consulta_cuotas = "SELECT Cuotas.id_cliente, Cuotas.Haber, Cuotas.[PLAN], Cuotas.Fecha, Cuotas.Vencimiento FROM Cuotas;"

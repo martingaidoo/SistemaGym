@@ -57,69 +57,73 @@ return:
     registrar: registra la asistencia el la tabla de asistencia con una fecha 
 """
 def registrarAsistencia(datos, self): 
-    def funcion_despues_del_temporizador(label): #sirve para destruir las ventanas de asistencia del cliente
-        global banderaDestroy
-        if banderaDestroy:
-            vencidoDark.destroy()
-            label.destroy()
+    if int(datos[7]) == 1:
+        def funcion_despues_del_temporizador(label): #sirve para destruir las ventanas de asistencia del cliente
+            global banderaDestroy
+            if banderaDestroy:
+                vencidoDark.destroy()
+                label.destroy()
+                label_deuda = customtkinter.CTkLabel(self.frame_asistencia, text="", fg_color="transparent")
+                label_deuda.configure(text=f"")
+                label_deuda.grid(row=6, column=1, pady=(0, 0), sticky="nsew")
+        def timerBandera(): #sirve para darle un tiempo a lña ventana y que no se destroy
+            global banderaDestroy
+            banderaDestroy = True
+        id_cliente,apellido,nombre, documento, correo, fecha_nacimiento, telefono, estado, id_cuota, deuda, plan, profesor, fecha, vencimiento, id_cliente2, id_cuota = datos
+        fecha_vencimiento = datetime.strptime(vencimiento, "%d/%m/%Y")
+        fecha_actual = datetime.strptime(actual, "%d/%m/%Y")
+        #esto va a ser la imagen de la asistencia del cliente
+        img_vencido = customtkinter.CTkImage(light_image=Image.open("./assets/casiVencidaLight.png"),
+                                        dark_image=Image.open("./assets/casiVencidaDark.png"),
+                                        size=(500, 200))
+        texto_personalizado = f" \n                {nombre} {apellido}\n \n \n {plan}\n \n \n \n {vencimiento}\n"
+        vencidoDark = customtkinter.CTkLabel(self.frame_asistencia, image=img_vencido, text=texto_personalizado,
+                                                    font=("Arial", 14),
+                                                    anchor="n")  # "w" significa alinear a la izquierda
+        vencidoDark.grid(row=4, column=1, pady=(20,0), sticky="nsew")
+        if (fecha_actual >= fecha_vencimiento):
+                #esto va a ser la ventana de vencimiento de abajo
+                banderaDestroy = False
+                label_vencido = customtkinter.CTkLabel(self.frame_asistencia, text=f"CUOTA VENCIDA", fg_color="red")
+                label_vencido.grid(row=5, column=1,sticky="nsew")
+                self.frame_asistencia.after(7000, timerBandera) 
+                self.frame_asistencia.after(8000, lambda: (funcion_despues_del_temporizador(label_vencido)))
+                #esto va a de al dia de abajo
+                #ruido de vencimiento 
+        if (fecha_actual < fecha_vencimiento):
+            #ruido de cuota al dia
+            banderaDestroy = False
+            if (fecha_vencimiento-fecha_actual).days <= 5:
+                label_vence = customtkinter.CTkLabel(self.frame_asistencia, text=f"VENCE EN {(fecha_vencimiento-fecha_actual).days} DÍAS", fg_color="yellow")
+                label_vence.grid(row=5, column=1, pady=(0,0),sticky="nsew")
+                self.frame_asistencia.after(7000, timerBandera) 
+                self.frame_asistencia.after(8000, lambda: (funcion_despues_del_temporizador(label_vence)))        
+            else:
+                label_ALDIA = customtkinter.CTkLabel(self.frame_asistencia, text=f"CUOTA AL DIA", fg_color="green")
+                label_ALDIA.grid(row=5, column=1,sticky="nsew")
+                self.frame_asistencia.after(7000, timerBandera) 
+                self.frame_asistencia.after(8000, lambda: (funcion_despues_del_temporizador(label_ALDIA)))
+        #esto va a ser la ventana de deuda de abajo
+        if int(deuda) > 0:
+            label_deuda = customtkinter.CTkLabel(self.frame_asistencia, text="", fg_color="orange")
+            label_deuda.configure(text=f"Deuda: {deuda}")
+            label_deuda.grid(row=6, column=1, pady=(0, 0), sticky="nsew")
+        else:
             label_deuda = customtkinter.CTkLabel(self.frame_asistencia, text="", fg_color="transparent")
             label_deuda.configure(text=f"")
             label_deuda.grid(row=6, column=1, pady=(0, 0), sticky="nsew")
-    def timerBandera(): #sirve para darle un tiempo a lña ventana y que no se destroy
-        global banderaDestroy
-        banderaDestroy = True
-    id_cliente,apellido,nombre, documento, correo, fecha_nacimiento, telefono, id_cuota, deuda, plan, profesor, fecha, vencimiento, id_cliente2, id_cuota = datos
-    fecha_vencimiento = datetime.strptime(vencimiento, "%d/%m/%Y")
-    
-    fecha_actual = datetime.strptime(actual, "%d/%m/%Y")
-    #esto va a ser la imagen de la asistencia del cliente
-    img_vencido = customtkinter.CTkImage(light_image=Image.open("./assets/casiVencidaLight.png"),
-                                    dark_image=Image.open("./assets/casiVencidaDark.png"),
-                                    size=(500, 200))
-    texto_personalizado = f" \n                {nombre} {apellido}\n \n \n {plan}\n \n \n \n {vencimiento}\n"
-    vencidoDark = customtkinter.CTkLabel(self.frame_asistencia, image=img_vencido, text=texto_personalizado,
-                                                font=("Arial", 14),
-                                                anchor="n")  # "w" significa alinear a la izquierda
-    vencidoDark.grid(row=4, column=1, pady=(20,0), sticky="nsew")
-    if (fecha_actual >= fecha_vencimiento):
-            #esto va a ser la ventana de vencimiento de abajo
-            banderaDestroy = False
-            label_vencido = customtkinter.CTkLabel(self.frame_asistencia, text=f"CUOTA VENCIDA", fg_color="red")
-            label_vencido.grid(row=5, column=1,sticky="nsew")
-            self.frame_asistencia.after(7000, timerBandera) 
-            self.frame_asistencia.after(8000, lambda: (funcion_despues_del_temporizador(label_vencido)))
-            #esto va a de al dia de abajo
-            #ruido de vencimiento 
-    if (fecha_actual < fecha_vencimiento):
-        #ruido de cuota al dia
-        banderaDestroy = False
-        if (fecha_vencimiento-fecha_actual).days <= 5:
-            label_vence = customtkinter.CTkLabel(self.frame_asistencia, text=f"VENCE EN {(fecha_vencimiento-fecha_actual).days} DÍAS", fg_color="yellow")
-            label_vence.grid(row=5, column=1, pady=(0,0),sticky="nsew")
-            self.frame_asistencia.after(7000, timerBandera) 
-            self.frame_asistencia.after(8000, lambda: (funcion_despues_del_temporizador(label_vence)))        
-        else:
-            label_ALDIA = customtkinter.CTkLabel(self.frame_asistencia, text=f"CUOTA AL DIA", fg_color="green")
-            label_ALDIA.grid(row=5, column=1,sticky="nsew")
-            self.frame_asistencia.after(7000, timerBandera) 
-            self.frame_asistencia.after(8000, lambda: (funcion_despues_del_temporizador(label_ALDIA)))
-    #esto va a ser la ventana de deuda de abajo
-    if int(deuda) > 0:
-        label_deuda = customtkinter.CTkLabel(self.frame_asistencia, text="", fg_color="orange")
-        label_deuda.configure(text=f"Deuda: {deuda}")
-        label_deuda.grid(row=6, column=1, pady=(0, 0), sticky="nsew")
+        conn = sqlite3.connect("BaseDatos.db")
+        cursor = conn.cursor()
+        
+        cursor.execute("INSERT INTO Asistencia (Cliente, Fecha) VALUES (?, ?)",
+                            (id_cliente, actualFechaHora))
+        print(actualFechaHora)
+        conn.commit()
+        conn.close()
     else:
-        label_deuda = customtkinter.CTkLabel(self.frame_asistencia, text="", fg_color="transparent")
-        label_deuda.configure(text=f"")
-        label_deuda.grid(row=6, column=1, pady=(0, 0), sticky="nsew")
-    conn = sqlite3.connect("BaseDatos.db")
-    cursor = conn.cursor()
-    
-    cursor.execute("INSERT INTO Asistencia (Cliente, Fecha) VALUES (?, ?)",
-                        (id_cliente, actualFechaHora))
-    print(actualFechaHora)
-    conn.commit()
-    conn.close()
+        mensaje = f"El cliente no esta habilitado, fue dado de baja"
+        messagebox.showinfo("Error", mensaje)
+
 
 """ en esta funcion registrara un cliente nuevo
 
@@ -140,8 +144,8 @@ def agregar_cliente(cliente_data):
     if apellido and nombre and documento and correo and fecha_nacimiento and telefono:
         try:
             # Insertar los datos en la tabla
-            cursor.execute("INSERT INTO Clientes (Apellido, Nombre, Documento, Correo, Fecha_Nacimiento, Telefono) VALUES (?, ?, ?, ?, ?, ?)",
-                        (apellido, nombre, documento, correo, fecha_nacimiento, telefono))
+            cursor.execute("INSERT INTO Clientes (Apellido, Nombre, Documento, Correo, Fecha_Nacimiento, Telefono, Estado) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                        (apellido, nombre, documento, correo, fecha_nacimiento, telefono, 1))
             # Confirmar la transacción
             conn.commit()
             mensaje = f"Registro de Cliente:\n\nNombre: {nombre}\nApellido: {apellido}\nDocumento: {documento}\nCorreo: {correo}\nNacimiento: {fecha_nacimiento}\nTelefono: {telefono}"
@@ -175,70 +179,75 @@ def registrarPago(data):
     """
     cursor.execute(consulta, (documento,)) 
 
-
     datos_cliente = cursor.fetchone()
     id_cliente = datos_cliente[0]
+    if int(datos_cliente[7]) == 1:
+            
+        consulta = """
+        SELECT * FROM Programa WHERE Nombre = ?;
+        """
+        cursor.execute(consulta, (Plan,)) 
+        datos_programa = cursor.fetchone()
+        id_programa = datos_programa[0]
 
-    consulta = """
-    SELECT * FROM Programa WHERE Nombre = ?;
-    """
-    cursor.execute(consulta, (Plan,)) 
-    datos_programa = cursor.fetchone()
-    id_programa = datos_programa[0]
+        consulta = """
+        SELECT * FROM Cuotas id_cliente WHERE id_cliente = ?;
+        """
+        cursor.execute(consulta, (id_cliente,)) 
+        datos_cuota = cursor.fetchone()
 
-    consulta = """
-    SELECT * FROM Cuotas id_cliente WHERE id_cliente = ?;
-    """
-    cursor.execute(consulta, (id_cliente,)) 
-    datos_cuota = cursor.fetchone()
+        #datos de las fechas de la cuota que existe para verificar si esta vencido
+        if not (datos_cuota == None):
+            fecha_actual = datetime.strptime(actual, "%d/%m/%Y")
+            fecha_vencimiento = datetime.strptime(datos_cuota[5], "%d/%m/%Y")
 
-    #datos de las fechas de la cuota que existe para verificar si esta vencido
-    if not (datos_cuota == None):
-        fecha_actual = datetime.strptime(actual, "%d/%m/%Y")
-        fecha_vencimiento = datetime.strptime(datos_cuota[5], "%d/%m/%Y")
-
-    # Verificar que ningún dato esté vacío
-    if id_cliente and Haber and Plan and Profesor and tipoVencimiento:
-        #variable que verifica si es el primer pago que hace
-        if datos_cuota == None:
-            try:
-                Haber = str(int(datos_programa[2])-int(Haber))
-                # Insertar los datos en la tabla
-                cursor.execute("INSERT INTO Cuotas (id, Haber, PLAN, PROFESOR, Fecha , Vencimiento, id_cliente, id_programa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (id_cliente, Haber, Plan, Profesor, actual, actaulMasMes, id_cliente, id_programa))
-                # Confirmar la transaccion
-                mixconexion.commit()
-            except sqlite3.Error as ex:
-                mixconexion.rollback()
-            finally:
-                mixconexion.close()
-    #para cuando la cuota este vencida y exista
-        if not (datos_cuota == None) and (fecha_actual >= fecha_vencimiento):
-            conexion = sqlite3.connect("BaseDatos.db")
-            cursor = conexion.cursor()
-            Haber = str(int(datos_programa[2])-int(Haber) + int(datos_cuota[1]))
-            if tipoVencimiento == "Fecha actual":
-                cursor.execute("UPDATE Cuotas SET Haber = ?, PLAN = ?, PROFESOR = ?, Fecha = ?, Vencimiento = ?, id_programa = ? WHERE id_cliente = ?",
-                            (Haber, Plan, Profesor, actual, actaulMasMes, id_programa, id_cliente))
+        # Verificar que ningún dato esté vacío
+        if id_cliente and Haber and Plan and Profesor and tipoVencimiento:
+            #variable que verifica si es el primer pago que hace
+            if datos_cuota == None:
+                try:
+                    Haber = str(int(datos_programa[2])-int(Haber))
+                    # Insertar los datos en la tabla
+                    cursor.execute("INSERT INTO Cuotas (id, Haber, PLAN, PROFESOR, Fecha , Vencimiento, id_cliente, id_programa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (id_cliente, Haber, Plan, Profesor, actual, actaulMasMes, id_cliente, id_programa))
+                    # Confirmar la transaccion
+                    mixconexion.commit()
+                except sqlite3.Error as ex:
+                    mixconexion.rollback()
+                finally:
+                    mixconexion.close()
+        #para cuando la cuota este vencida y exista
+            if not (datos_cuota == None) and (fecha_actual >= fecha_vencimiento):
+                print("6")
+                conexion = sqlite3.connect("BaseDatos.db")
+                cursor = conexion.cursor()
+                Haber = str(int(datos_programa[2])-int(Haber) + int(datos_cuota[1]))
+                if tipoVencimiento == "Fecha actual":
+                    cursor.execute("UPDATE Cuotas SET Haber = ?, PLAN = ?, PROFESOR = ?, Fecha = ?, Vencimiento = ?, id_programa = ? WHERE id_cliente = ?",
+                                (Haber, Plan, Profesor, actual, actaulMasMes, id_programa, id_cliente))
+                    conexion.commit()
+                else:
+                    fecha_vencimiento_con_mes_adicional = fecha_vencimiento + relativedelta(months=1)
+                    vencimientoMasMes = fecha_vencimiento_con_mes_adicional.strftime("%d/%m/%Y")
+                    cursor.execute("UPDATE Cuotas SET Haber = ?, PLAN = ?, PROFESOR = ?, Fecha = ?, Vencimiento = ?, id_programa = ? WHERE id_cliente = ?",
+                                (Haber, Plan, Profesor, actual, vencimientoMasMes, id_programa, id_cliente))
+                    conexion.commit()
+            
+        #para cuando la cuota no este vencida y exista
+            if not (datos_cuota == None) and (fecha_actual < fecha_vencimiento):
+                print("7")
+                conexion = sqlite3.connect("BaseDatos.db")
+                cursor = conexion.cursor()
+                Haber = str(-int(Haber) + int(datos_cuota[1]))
+                cursor.execute("UPDATE Cuotas SET Haber = ?, PLAN = ?, PROFESOR = ?,  id_programa = ? WHERE id_cliente = ?",
+                            (Haber, Plan, Profesor, id_programa, id_cliente))
                 conexion.commit()
-            else:
-                fecha_vencimiento_con_mes_adicional = fecha_vencimiento + relativedelta(months=1)
-                vencimientoMasMes = fecha_vencimiento_con_mes_adicional.strftime("%d/%m/%Y")
-                cursor.execute("UPDATE Cuotas SET Haber = ?, PLAN = ?, PROFESOR = ?, Fecha = ?, Vencimiento = ?, id_programa = ? WHERE id_cliente = ?",
-                            (Haber, Plan, Profesor, actual, vencimientoMasMes, id_programa, id_cliente))
-                conexion.commit()
-        
-    #para cuando la cuota no este vencida y exista
-        if not (datos_cuota == None) and (fecha_actual < fecha_vencimiento):
-            conexion = sqlite3.connect("BaseDatos.db")
-            cursor = conexion.cursor()
-            Haber = str(-int(Haber) + int(datos_cuota[1]))
-            cursor.execute("UPDATE Cuotas SET Haber = ?, PLAN = ?, PROFESOR = ?,  id_programa = ? WHERE id_cliente = ?",
-                        (Haber, Plan, Profesor, id_programa, id_cliente))
-            conexion.commit()
-        mensaje = f"Registro de Cobro:\n\nNombre: {datos_cliente[2]}\nApellido: {datos_cliente[1]}\nDocumento: {documento}\nCobro: {cobro}\nProfesor: {Profesor}\nFecha: {actual}"
-        messagebox.showinfo("Cobro Registrado", mensaje)
-        
-        registrarCobro(id_cliente, cobro, Profesor)
+            mensaje = f"Registro de Cobro:\n\nNombre: {datos_cliente[2]}\nApellido: {datos_cliente[1]}\nDocumento: {documento}\nCobro: {cobro}\nProfesor: {Profesor}\nFecha: {actual}"
+            messagebox.showinfo("Cobro Registrado", mensaje)
+            
+            registrarCobro(id_cliente, cobro, Profesor)
+    else:
+        mensaje = f"El cliente no esta habilitado, fue dado de baja"
+        messagebox.showinfo("Error", mensaje)
 
 """ en esta funcion registrara un cliente nuevo
 
