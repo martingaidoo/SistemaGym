@@ -1,7 +1,6 @@
 import tkinter
 import tkinter.messagebox
 import customtkinter
-from logicaBotones import *
 from tkinter import PhotoImage
 import customtkinter
 import customtkinter as ctk
@@ -18,14 +17,22 @@ from tkinter import messagebox
 import keyboard
 from datetime import datetime
 from database_utils import *
-from informes import *
 from tkinter import PhotoImage
 from PIL import Image, ImageTk
 import os
 import sys
-from pruebas import *
 import asyncio
 import requests
+from components.ControlAcceso.controlAcceso import *
+from components.RegistrarCliente.registrarCliente import *
+from components.ActualizarCliente.actualizarClientes import *
+from components.PagoCuota.pagoCuotas import *
+from components.ActualizarPlanes.actualizarPrecio import *
+from components.caja.caja import *
+from components.Asistencias.asistencias import *
+from components.whatsapp.whatsapp import *
+from components.Informes.informes import *
+from components.buscarFicha.fichaCliente import *
 
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"

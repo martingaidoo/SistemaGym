@@ -1,1 +1,0 @@
-RegistrarCielte.geometry("1200x600")
