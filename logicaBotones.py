@@ -18,7 +18,8 @@ import keyboard
 from datetime import datetime
 from database_utils import *
 from informes import *
-
+import requests
+from datetime import datetime, timedelta
 import os
 import sys
 
@@ -1007,3 +1008,92 @@ def asistencias(self):
             # Obtener y actualizar datos según el rango de fechas seleccionado
             self.obtener_datos(entradaDocumento)
     TablaDatos(self.frame_asistencia)
+
+
+
+def conocerClientesPorVencer():
+    
+    data = []
+    info_cliente = []
+
+    # Conectar a la base de datos
+    conn = sqlite3.connect('BaseDatos.db')
+    cursor = conn.cursor()
+
+    # Obtener la fecha actual y la fecha dentro de 5 días
+    fecha_actual = datetime.now()
+    fecha_limite = fecha_actual + timedelta(days=5)
+
+    # Consulta SQL para obtener todos los registros de Clientes y Cuotas
+    consulta = """
+        SELECT Clientes.*, Cuotas.*
+        FROM Clientes
+        JOIN Cuotas ON Clientes.id = Cuotas.id_cliente
+    """
+    cursor.execute(consulta)
+
+    # Obtener los resultados
+    resultados = cursor.fetchall()
+
+    # Lista para almacenar los datos de los clientes cuyas cuotas se vencen en 5 o menos días
+    clientes_vencimiento_cercano = []
+
+    # Iterar sobre los resultados y realizar el filtrado fuera de la consulta
+    for fila in resultados:
+        # Convertir la fecha de vencimiento de la cuota a un objeto datetime
+        # Obtener la fecha de vencimiento de la cuota
+        # Obtener la fecha de vencimiento de la cuota
+        fecha_vencimiento_cuota = datetime.strptime(str(fila[-3]), "%d/%m/%Y")
+        # Calcular la diferencia de días entre la fecha actual y la fecha de vencimiento de la cuota
+        diferencia_dias = (fecha_vencimiento_cuota - fecha_actual).days
+        # Si la diferencia es de 5 días o menos, añadir los datos del cliente y la cuota al array
+        print(diferencia_dias)
+        if 0 < diferencia_dias < 5:
+            clientes_vencimiento_cercano.append(fila)
+
+    for cliente_cuota_info in clientes_vencimiento_cercano:
+        # Extraer la información necesaria de la tupla cliente_cuota_info
+
+        numero_telefono = cliente_cuota_info[6]  # Número de teléfono del cliente
+        fecha_vencimiento_cuota = cliente_cuota_info[-3]  # Fecha de vencimiento de la cuota
+
+        # Construir el mensaje para el cliente
+        mensaje = f"Su cuota vencerá en los próximos días, la fecha de vencimiento es {fecha_vencimiento_cuota}"
+
+        # Crear el diccionario con la información del cliente y su cuota
+        cliente = {
+            "numero": str(numero_telefono),  # Convertir a cadena de texto si es necesario
+            "mensaje": mensaje
+        }
+
+        # Agregar el diccionario a la lista data
+        data.append(cliente)
+        info_cliente.append(cliente_cuota_info)
+
+    # Cerrar la conexión
+    conn.close()
+    
+    return (data, info_cliente)
+
+
+
+def whatsapp_api(self):
+    url = 'http://localhost:3000/enviar-mensaje'
+    data, info_cliente = conocerClientesPorVencer()
+
+    def button_event():
+        print("button pressed")
+        response = requests.post(url, json=data)
+        if response.status_code == 200:
+            print("Solicitud POST exitosa")
+            print("Respuesta del servidor:", response.json())
+        else:
+            print("Error al enviar la solicitud POST:", response.status_code)
+
+    notificar = customtkinter.CTkScrollableFrame(self, label_text="Notificar")
+    notificar.pack(pady=10)
+    for i in info_cliente:
+        etiqueta_notificacion = customtkinter.CTkLabel(notificar, text=f"{i[1]} {i[2]} - Vence pronto")
+        etiqueta_notificacion.pack(fill="x", padx=0, pady=5)
+    button = customtkinter.CTkButton(self, text="Enviar Mensaje", command=button_event)
+    button.pack(pady=10)

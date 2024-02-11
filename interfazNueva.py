@@ -23,11 +23,16 @@ from tkinter import PhotoImage
 from PIL import Image, ImageTk
 import os
 import sys
+from pruebas import *
+import asyncio
+import requests
 
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
+url = 'http://localhost:3000/'
+verificacion = False
 
 def conectar_bd():
         # Configura la conexión a la base de datos SQLite
@@ -194,10 +199,27 @@ class App(customtkinter.CTk):
             self.tabview = customtkinter.CTkTabview(self, width=250)
             self.tabview.grid(row=1, column=3, padx=(20, 0), pady=(20, 0), sticky="nsew")
             self.tabview.add("opciones")
+
             self.tabview.add("WhatsApp")
-            self.tabview.add("Configuracion")
-            self.tabview.tab("opciones").grid_columnconfigure(0, weight=1)  # configure grid of individual tabs
             self.tabview.tab("WhatsApp").grid_columnconfigure(0, weight=1)
+            self.frame_whatsapp = customtkinter.CTkFrame(self.tabview.tab("WhatsApp"),fg_color="transparent", width=200, height=200)
+            self.frame_whatsapp.pack(pady=10)
+
+            self.cargar_imagen()
+            self.actualizar_imagen()
+
+
+
+
+            #whatsapp(self)
+
+            #self.tabview.add("WhatsApp")
+
+            self.tabview.add("Configuracion")
+
+            self.tabview.tab("opciones").grid_columnconfigure(0, weight=1)  # configure grid of individual tabs
+            #self.tabview.tab("WhatsApp").grid_columnconfigure(0, weight=1)
+
 
             self.optionmenu_1 = customtkinter.CTkOptionMenu(self.tabview.tab("opciones"), dynamic_resizing=False,
                                                             values=["Opcion 1", "Opcion 2", "Opcion 3"])
@@ -205,11 +227,13 @@ class App(customtkinter.CTk):
             self.combobox_1 = customtkinter.CTkComboBox(self.tabview.tab("opciones"),
                                                         values=["Opcion 1", "Opcion 2", "Opcio n3"])
             self.combobox_1.grid(row=1, column=0, padx=20, pady=(10, 10))
+
             self.string_input_button = customtkinter.CTkButton(self.tabview.tab("opciones"), text="Cuadro de dialogo",
                                                                 command=self.open_input_dialog_event)
             self.string_input_button.grid(row=2, column=0, padx=20, pady=(10, 10))
-            self.label_tab_2 = customtkinter.CTkLabel(self.tabview.tab("WhatsApp"), text="Label Pestaña 2")
-            self.label_tab_2.grid(row=0, column=0, padx=20, pady=20)
+
+            #self.label_tab_2 = customtkinter.CTkLabel(self.tabview.tab("WhatsApp"), text="")
+            #self.label_tab_2.grid(row=0, column=0, padx=20, pady=20)
 
   
             # create scrollable frame
@@ -226,24 +250,69 @@ class App(customtkinter.CTk):
                 if nombre:
                     etiqueta_notificacion = customtkinter.CTkLabel(self.scrollable_frame, text=f"{nombre} - Vencido")
                     etiqueta_notificacion.pack(fill="x", padx=10, pady=5)
-                    
-
-                # set default values
-                #self.sidebar_button_9.configure(state="disabled", text="Este boton no lo podes clickear")
-                #self.scrollable_frame_switches[0].select()
-                #self.scrollable_frame_switches[4].select()
                 self.appearance_mode_optionemenu.set("Dark")
                 self.scaling_optionemenu.set("100%")
                 self.optionmenu_1.set("Menu")
                 self.combobox_1.set("Opciones")
 
+
+#actualizo el label del qr de whatsapp y ademas hace los calculos para verificar el whatsapp y mostrar el frame correspondiente
+    def cargar_imagen(self):
+        imagen_path = r"C:\Users\sys-s\OneDrive\Escritorio\api-whatsapp\qr-code.png"
+        imagen = Image.open(imagen_path)
+        imagen = imagen.resize((300, 300), Image.ANTIALIAS)
+        self.imagen_tk = ImageTk.PhotoImage(imagen)
+
+    def actualizar_imagen(self):
+        global verificacion
+
+        try:
+            response = requests.get(url)
+            # Verifica si la solicitud fue exitosa (código de estado 200)
+            if response.status_code == 200:
+                print("La solicitud GET fue exitosa")
+                print(response.text)
+                if response.text == "true":
+                    if verificacion == False:
+                        if hasattr(self, "label_imagen"):
+                            self.label_imagen.grid_forget()
+                        
+                        whatsapp_api(self.frame_whatsapp)
+                        verificacion = True
+                else:
+                    print("entro aca")
+                    self.cargar_imagen()
+                    if hasattr(self, "label_imagen"):
+                        self.label_imagen.grid_forget()
+                    self.label_imagen = customtkinter.CTkLabel(self.frame_whatsapp,text=(""), image=self.imagen_tk)
+                    self.label_imagen.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")  # Grid en el widget WhatsApp
+                    # Establece el tiempo en milisegundos para actualizar la imagen (por ejemplo, cada 5 segundos)
+                    self.after(5000, self.actualizar_imagen)    
+
+            else:
+                #print("La solicitud GET no fue exitosa. Código de estado:", response.status_code)
+                print()
+
+        except requests.exceptions.RequestException as e:
+            #print("Error al hacer la solicitud GET:", e)
+            print("entro aca por el error 2")
+
+#################
+
+
+
     def open_input_dialog_event(self):
         dialog = customtkinter.CTkInputDialog(text="Escribi algo:", title="Cuadro de dialogo")
         print("El usuario escribio:", dialog.get_input())
 
+
+
+
+
+
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
-         # Cambia el modo de la interfaz y recarga los iconos
+        # Cambia el modo de la interfaz y recarga los iconos
         self.interface_mode = new_appearance_mode.lower()
         self.load_icons()
 

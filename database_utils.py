@@ -21,6 +21,16 @@ actual = fecha_actual.strftime("%d/%m/%Y")
 actaulMasMes = fecha_con_mes_adicional.strftime("%d/%m/%Y")
 #sirve para destrouit la ventada de la asistencia del cliente
 banderaDestroy = True
+def reproducir_sonido(value):
+    pygame.init()
+    pygame.mixer.init()
+    if value == "pago":
+        sonido = pygame.mixer.Sound("./sonidobien.wav")
+        sonido.play()
+    else:
+        sonido = pygame.mixer.Sound("./sonidomal.mp3")
+        sonido.play()
+        
 
 def buscar_cliente_con_cuotas(documento):
     # Conectar con la base de datos
@@ -57,6 +67,7 @@ return:
     registrar: registra la asistencia el la tabla de asistencia con una fecha 
 """
 def registrarAsistencia(datos, self): 
+    #reproducir_sonido()
     if int(datos[7]) == 1:
         def funcion_despues_del_temporizador(label): #sirve para destruir las ventanas de asistencia del cliente
             global banderaDestroy
@@ -88,6 +99,8 @@ def registrarAsistencia(datos, self):
                 label_vencido.grid(row=5, column=1,sticky="nsew")
                 self.frame_asistencia.after(7000, timerBandera) 
                 self.frame_asistencia.after(8000, lambda: (funcion_despues_del_temporizador(label_vencido)))
+                reproducir_sonido("vencido")
+                
                 #esto va a de al dia de abajo
                 #ruido de vencimiento 
         if (fecha_actual < fecha_vencimiento):
@@ -103,6 +116,7 @@ def registrarAsistencia(datos, self):
                 label_ALDIA.grid(row=5, column=1,sticky="nsew")
                 self.frame_asistencia.after(7000, timerBandera) 
                 self.frame_asistencia.after(8000, lambda: (funcion_despues_del_temporizador(label_ALDIA)))
+            reproducir_sonido("pago")
         #esto va a ser la ventana de deuda de abajo
         if int(deuda) > 0:
             label_deuda = customtkinter.CTkLabel(self.frame_asistencia, text="", fg_color="orange")
