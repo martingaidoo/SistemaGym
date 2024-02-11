@@ -291,23 +291,19 @@ class App(customtkinter.CTk):
 
             else:
                 #print("La solicitud GET no fue exitosa. Código de estado:", response.status_code)
-                print()
+                if hasattr(self, "label_imagen"):
+                    self.label_imagen.grid_forget()
+                self.after(5000, self.actualizar_imagen)  
 
         except requests.exceptions.RequestException as e:
-            #print("Error al hacer la solicitud GET:", e)
-            print("entro aca por el error 2")
+            if hasattr(self, "label_imagen"):
+                        self.label_imagen.grid_forget()
+            self.after(5000, self.actualizar_imagen)  
 
 #################
-
-
-
     def open_input_dialog_event(self):
         dialog = customtkinter.CTkInputDialog(text="Escribi algo:", title="Cuadro de dialogo")
         print("El usuario escribio:", dialog.get_input())
-
-
-
-
 
 
     def change_appearance_mode_event(self, new_appearance_mode: str):
