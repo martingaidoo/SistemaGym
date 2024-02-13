@@ -12,7 +12,7 @@ from PIL import ImageTk,Image
 from tkcalendar import Calendar
 from tkinter import messagebox
 import customtkinter as ctk
-import re
+
 
 banderaVencimiento = False
 
@@ -21,28 +21,6 @@ actualFechaHora = fecha_actual.strftime("%d/%m/%Y %H:%M:%S")
 fecha_con_mes_adicional = fecha_actual + relativedelta(months=1)
 # Formatear la fecha como días/mes/año
 actual = fecha_actual.strftime("%d/%m/%Y")
-
-
-def validar_fecha(fecha):
-    # Expresión regular para validar el formato día/mes/año
-    patron = r"^(0[1-9]|[1-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/([0-9]{4})$"
-    
-    # Verificar si la fecha coincide con el patrón
-    if re.match(patron, fecha):
-        return True
-    else:
-        return False
-    
-
-def fechaNacimiento_valida(fecha):
-    # Expresión regular para validar el formato día/mes/año
-    patron = r"^(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[0-2])/([0-9]{4})$"
-    
-    # Verificar si la fecha coincide con el patrón
-    if re.match(patron, fecha):
-        return True
-    else:
-        return False
 
 
 def actualizarClientes(self):
@@ -120,6 +98,7 @@ def actualizarClientes(self):
                 self.btn_vencido = ctk.CTkButton(frame, text="Vencido", command=lambda: (self.mostrar_programas(), cambiar()))
                 self.btn_vencido.grid(row=6, column=0)
 
+
                 # Crear una lista para mostrar los datos de la base de datos
                 self.lista_programas = tk.Listbox(frame)
                 self.lista_programas.grid(row=7, column=0, columnspan=4, sticky=tk.W + tk.E + tk.N + tk.S)
@@ -127,6 +106,8 @@ def actualizarClientes(self):
 
                 # Asignar una función para manejar la selección en la lista
                 self.lista_programas.bind('<<ListboxSelect>>', self.seleccionar_programa)
+
+
 
                 def cambiar():
                     global banderaVencimiento
@@ -180,36 +161,22 @@ def actualizarClientes(self):
                 cliente = self.cursor.fetchone()
 
                 if apellido and nombre and correo and documento and fechaNacimiento and telefono and deuda != "" and fecha != "" and vencimiento != "" and plan != "":
-                    if fechaNacimiento_valida(fechaNacimiento) and telefono.isdigit():
-                        self.cursor.execute("UPDATE Clientes SET Apellido=?, Nombre=?, Correo=?, Telefono=?, Fecha_Nacimiento=? WHERE Documento=?",
-                                            (apellido, nombre, correo, telefono, fechaNacimiento, documento))
-                        self.conexion.commit()
-                    else:
-                        messagebox.showinfo("ERROR", "la fecha que ingresaste no es valida o el numero de telefono contiene algunos caracteres no validos")
+                    self.cursor.execute("UPDATE Clientes SET Apellido=?, Nombre=?, Correo=?, Telefono=?, Fecha_Nacimiento=? WHERE Documento=?",
+                                        (apellido, nombre, correo, telefono, fechaNacimiento, documento))
+                    self.conexion.commit()
 
-                    if deuda.isdigit() and validar_fecha(fecha) and validar_fecha(vencimiento):
-
-                        self.cursor.execute("UPDATE Cuotas SET Haber=?, Fecha=?, Vencimiento=? WHERE id=?",
-                                            (deuda, fecha, vencimiento, cliente[0]))
-                        self.conexion.commit()
-                        print(vencimiento)
+                    self.cursor.execute("UPDATE Cuotas SET Haber=?, PLAN=?, Fecha=?, Vencimiento=? WHERE id=?",
+                                        (deuda,plan, fecha, vencimiento, cliente[0]))
+                    self.conexion.commit()
                     
-                        self.mostrar_programas()
-                        self.limpiar_campos()
-
-                    else:
-                        messagebox.showinfo("ERROR", "la deuda que ingresaste no corresponde a un numero o la fecha que ingresaste no es valida. un ejemplo de fecha puede ser 03/09/2024")
-
+                    self.mostrar_programas()
+                    self.limpiar_campos()
                 elif apellido and nombre and correo and documento and fechaNacimiento and telefono and deuda == "" and fecha == "" and vencimiento == "" and plan == "":
-                    if fechaNacimiento_valida(fechaNacimiento) and telefono.isdigit():
-                        self.cursor.execute("UPDATE Clientes SET Apellido=?, Nombre=?, Correo=?, Telefono=?, Fecha_Nacimiento=? WHERE Documento=?",
-                                            (apellido, nombre, correo, telefono, fechaNacimiento, documento))
-                        self.conexion.commit()
-                        self.mostrar_programas()
-                        self.limpiar_campos()
-                    else:
-                        messagebox.showinfo("ERROR", "la fecha que ingresaste no es valida o el numero de telefono contiene algunos caracteres no validos")
-
+                    self.cursor.execute("UPDATE Clientes SET Apellido=?, Nombre=?, Correo=?, Telefono=?, Fecha_Nacimiento=? WHERE Documento=?",
+                                        (apellido, nombre, correo, telefono, fechaNacimiento, documento))
+                    self.conexion.commit()
+                    self.mostrar_programas()
+                    self.limpiar_campos()
 
             def seleccionar_programa(self, event):
                 programa = self.lista_programas.get(self.lista_programas.curselection())
