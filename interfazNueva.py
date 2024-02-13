@@ -267,7 +267,6 @@ class App(customtkinter.CTk):
     def cargar_imagen(self):
         imagen_path = r"C:\Users\sys-s\OneDrive\Escritorio\api-whatsapp\qr-code.png"
         imagen = Image.open(imagen_path)
-        imagen = imagen.resize((300, 300), Image.ANTIALIAS)
         self.imagen_tk = ImageTk.PhotoImage(imagen)
 
     def actualizar_imagen(self):
@@ -294,18 +293,18 @@ class App(customtkinter.CTk):
                     self.label_imagen = customtkinter.CTkLabel(self.frame_whatsapp,text=(""), image=self.imagen_tk)
                     self.label_imagen.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")  # Grid en el widget WhatsApp
                     # Establece el tiempo en milisegundos para actualizar la imagen (por ejemplo, cada 5 segundos)
-                    self.after(5000, self.actualizar_imagen)    
+                    self.after(15000, self.actualizar_imagen)    
 
             else:
                 #print("La solicitud GET no fue exitosa. Código de estado:", response.status_code)
                 if hasattr(self, "label_imagen"):
                     self.label_imagen.grid_forget()
-                self.after(5000, self.actualizar_imagen)  
+                self.after(15000, self.actualizar_imagen)  
 
         except requests.exceptions.RequestException as e:
             if hasattr(self, "label_imagen"):
                         self.label_imagen.grid_forget()
-            self.after(5000, self.actualizar_imagen)  
+            self.after(60000, self.actualizar_imagen)  
 
 #################
     def open_input_dialog_event(self):
