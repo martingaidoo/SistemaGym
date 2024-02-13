@@ -13,6 +13,11 @@ from tkcalendar import Calendar
 from tkinter import messagebox
 
 
+
+
+
+
+
 """ en esta funcion registrara un cliente nuevo
 
 Args: 
@@ -30,18 +35,40 @@ def agregar_cliente(cliente_data):
     nombre, apellido, correo, documento, fecha_nacimiento, telefono = cliente_data
     # Verificar que ningún dato esté vacío
     if apellido and nombre and documento and correo and fecha_nacimiento and telefono:
-        try:
-            # Insertar los datos en la tabla
-            cursor.execute("INSERT INTO Clientes (Apellido, Nombre, Documento, Correo, Fecha_Nacimiento, Telefono, Estado) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                        (apellido, nombre, documento, correo, fecha_nacimiento, telefono, 1))
-            # Confirmar la transacción
-            conn.commit()
-            mensaje = f"Registro de Cliente:\n\nNombre: {nombre}\nApellido: {apellido}\nDocumento: {documento}\nCorreo: {correo}\nNacimiento: {fecha_nacimiento}\nTelefono: {telefono}"
-            messagebox.showinfo("Cliente Registrado", mensaje)
-        except sqlite3.Error as e:
-            conn.rollback()
-        finally:
-            conn.close()
+        if not any(char.isdigit() for char in nombre) and not any(char.isdigit() for char in apellido) :
+            if  len(documento)==8 and documento.isdigit():
+                cursor.execute("SELECT * FROM Clientes WHERE Documento = ?", (documento,))
+                existente = cursor.fetchone()
+
+                if existente:
+                    # Documento ya existe en la base de datos
+                    messagebox.showinfo('Error', f"El documento {documento} ya está registrado.")
+                else:
+                    if telefono.isdigit():
+                    
+                        try:
+                            # Insertar los datos en la tabla
+                            cursor.execute("INSERT INTO Clientes (Apellido, Nombre, Documento, Correo, Fecha_Nacimiento, Telefono, Estado) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                                        (apellido, nombre, documento, correo, fecha_nacimiento, telefono, 1))
+                            # Confirmar la transacción
+                            conn.commit()
+                            mensaje = f"Registro de Cliente:\n\nNombre: {nombre}\nApellido: {apellido}\nDocumento: {documento}\nCorreo: {correo}\nNacimiento: {fecha_nacimiento}\nTelefono: {telefono}"
+                            messagebox.showinfo("Cliente Registrado", mensaje)
+                        except sqlite3.Error as e:
+                            conn.rollback()
+                        finally:
+                            conn.close()
+                    else:
+                        messagebox.showinfo(f'Error', f"{telefono} no es un posible numero valido")
+                        
+            else:
+                messagebox.showinfo(f'Error', f"{documento} no es un documento valido")
+        
+                
+        else:
+            
+            messagebox.showinfo(f'Error', "El nombre o el apellido no cumple con el formato")
+        
 
 
 

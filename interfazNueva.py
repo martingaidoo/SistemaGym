@@ -41,6 +41,7 @@ customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "gre
 url = 'http://localhost:3000/'
 verificacion = False
 
+
 def conectar_bd():
         # Configura la conexión a la base de datos SQLite
         conexion = sqlite3.connect('BaseDatos.db')
@@ -75,8 +76,11 @@ def obtener_notificaciones():
     conexion.close()
 
     return resultados
+
 class App(customtkinter.CTk):
+    
     def __init__(self):
+            
             super().__init__()
             
             self.interface_mode = "Dark"  # Puedes cambiar esto dinámicamente según tu lógica
@@ -265,9 +269,9 @@ class App(customtkinter.CTk):
 
 #actualizo el label del qr de whatsapp y ademas hace los calculos para verificar el whatsapp y mostrar el frame correspondiente
     def cargar_imagen(self):
-        imagen_path = r"C:\Users\sys-s\OneDrive\Escritorio\api-whatsapp\qr-code.png"
+        imagen_path = r"C:\Users\Usuario\Desktop\Laburo\qr-code.jpg"
         imagen = Image.open(imagen_path)
-        imagen = imagen.resize((300, 300), Image.ANTIALIAS)
+        
         self.imagen_tk = ImageTk.PhotoImage(imagen)
 
     def actualizar_imagen(self):
@@ -294,18 +298,18 @@ class App(customtkinter.CTk):
                     self.label_imagen = customtkinter.CTkLabel(self.frame_whatsapp,text=(""), image=self.imagen_tk)
                     self.label_imagen.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")  # Grid en el widget WhatsApp
                     # Establece el tiempo en milisegundos para actualizar la imagen (por ejemplo, cada 5 segundos)
-                    self.after(5000, self.actualizar_imagen)    
+                    self.after(60000, self.actualizar_imagen)    
 
             else:
                 #print("La solicitud GET no fue exitosa. Código de estado:", response.status_code)
                 if hasattr(self, "label_imagen"):
                     self.label_imagen.grid_forget()
-                self.after(5000, self.actualizar_imagen)  
+                self.after(60000, self.actualizar_imagen)  
 
         except requests.exceptions.RequestException as e:
             if hasattr(self, "label_imagen"):
                         self.label_imagen.grid_forget()
-            self.after(5000, self.actualizar_imagen)  
+            self.after(60000, self.actualizar_imagen)  
 
 #################
     def open_input_dialog_event(self):

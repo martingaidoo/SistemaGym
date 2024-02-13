@@ -124,35 +124,7 @@ def controlAcceso(self):
         cursor.execute("SELECT Nombre || ' ' || Apellido || ' ' || Documento AS NombreCompleto FROM Clientes")
         resultados = cursor.fetchall()
         lista_resultante = [tupla[0] for tupla in resultados]
-        def mostrar_seleccion2(event):
-            selected_indices = lista_resultados_asistencia.curselection()
-            
-            if selected_indices:
-                selected_item = lista_resultados_asistencia.get(selected_indices[0])
-                entry_asistencia.delete(0, tk.END)  # Limpiar el contenido actual
-                entry_asistencia.insert(0, selected_item[-8:])
 
-        def actualizar_resultados2():
-            # Obtiene la entrada actual del cuadro de texto
-            entrada = entry_asistencia.get()
-            # Filtra la lista de nombres y apellidos en función de la entrada
-            resultados_filtrados = [nombre_apellido for nombre_apellido in lista_resultante if entrada in nombre_apellido.lower()]
-            resultados_filtrados = resultados_filtrados[:4]
-            # Borra los elementos actuales en la lista de resultados
-            lista_resultados_asistencia.delete(0, tk.END)
-            # Agrega los nuevos resultados filtrados a la lista
-            for resultado in resultados_filtrados:
-                lista_resultados_asistencia.insert(tk.END, resultado)
-            # Muestra u oculta la lista de resultados en función de si hay resultados
-            if not resultados_filtrados or entry_asistencia.get() == "":
-                lista_resultados_asistencia.grid_forget()  # Cambiado a grid_forget
-            else:
-                lista_resultados_asistencia.grid(row=4, column=1, pady=(20, 0), sticky="nsew")  # Cambiado a grid
-                # Ajusta la altura de la lista de resultados
-                lista_resultados_asistencia.config(height=len(resultados_filtrados))
-            # Programa la próxima ejecución de la función después de 100 milisegundos
-            self.after(100, actualizar_resultados2)
-        global lista_resultados_asistencia
 
 
         self.frame_asistencia = customtkinter.CTkFrame(self, width=250)
@@ -182,6 +154,6 @@ def controlAcceso(self):
             if entry_asistencia.get() != "":
                 registrarAsistencia(obtener_datos_cliente(entry_asistencia.get()),self),entry_asistencia.delete(0, tk.END)
         #ejecuta la funcion de arriba con apretar el enter
-        actualizar_resultados2()
+        
         self.bind("<Return>", funcion_al_presionar_tecla)
-        lista_resultados_asistencia.bind("<<ListboxSelect>>", mostrar_seleccion2)
+        
