@@ -20,7 +20,6 @@ from database_utils import *
 import requests
 from datetime import datetime, timedelta
 
-
 def obtener_notificaciones_recientes():
     # Conexión a la base de datos SQLite
     conn = sqlite3.connect('BaseDatos.db')
@@ -122,7 +121,6 @@ def conocerClientesPorVencer():
     conn.close()
     
     return (data, info_cliente)
-
 
 
 def guardar_notificacion(tipo, id_cliente, mensaje):

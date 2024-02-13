@@ -101,7 +101,7 @@ def mostrarResultados(self):
             # Ajusta la altura de la lista de resultados
             lista_resultados.config(height=len(resultados_filtrados))
         # Programa la próxima ejecución de la función después de 100 milisegundos
-        self.after(100, actualizar_resultados)
+        self.after(1000, actualizar_resultados)
     global lista_resultados
     
     # Crear una lista para mostrar los resultados
