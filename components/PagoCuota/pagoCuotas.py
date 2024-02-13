@@ -21,11 +21,11 @@ actual = fecha_actual.strftime("%d/%m/%Y")
 actaulMasMes = fecha_con_mes_adicional.strftime("%d/%m/%Y")
 
 
-def registrarCobro(id, cobro, profesor):
+def registrarCobro(id, cobro, profesor, metodo):
     conn = sqlite3.connect("BaseDatos.db")
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO Cobro (fecha, cobro, profesor, id_cliente) VALUES (?, ?, ?, ?)",
-                        (actual, cobro, profesor, id))
+    cursor.execute("INSERT INTO Cobro (fecha, cobro, profesor, id_cliente, metodoPago) VALUES (?, ?, ?, ? , ?)",
+                        (actual, cobro, profesor, id,  metodo))
     conn.commit()
     conn.close()
 
@@ -48,7 +48,7 @@ def registrarPago(data):
     cursor = mixconexion.cursor()
     # Obtener los datos del cliente
 
-    documento, Haber, Plan, Profesor, tipoVencimiento= data
+    documento, Haber, Plan, Profesor, tipoVencimiento, metodo= data
     cobro = Haber
 
     consulta = """
@@ -79,7 +79,7 @@ def registrarPago(data):
             fecha_vencimiento = datetime.strptime(datos_cuota[5], "%d/%m/%Y")
 
         # Verificar que ningún dato esté vacío
-        if id_cliente and Haber and Plan and Profesor and tipoVencimiento:
+        if id_cliente and Haber and Plan and Profesor and tipoVencimiento and metodo:
             #variable que verifica si es el primer pago que hace
             if datos_cuota == None:
                 try:
@@ -121,7 +121,7 @@ def registrarPago(data):
             mensaje = f"Registro de Cobro:\n\nNombre: {datos_cliente[2]}\nApellido: {datos_cliente[1]}\nDocumento: {documento}\nCobro: {cobro}\nProfesor: {Profesor}\nFecha: {actual}"
             messagebox.showinfo("Cobro Registrado", mensaje)
             
-            registrarCobro(id_cliente, cobro, Profesor)
+            registrarCobro(id_cliente, cobro, Profesor, metodo)
     else:
         mensaje = f"El cliente no esta habilitado, fue dado de baja"
         messagebox.showinfo("Error", mensaje)
@@ -222,17 +222,27 @@ def pagoCuotas(self):
         entry_pago = customtkinter.CTkEntry(self.frame_pagoCuota, width=120, height=25, corner_radius=10)
         entry_pago.grid(row=8, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
 
+        label_metodo = customtkinter.CTkLabel(self.frame_pagoCuota, text="Metodo de pago", font=('Century Gothic',15))
+        label_metodo.grid(row=9, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
+
+        lista_metodo = ["Efectivo", "Transferencia"]
+
+        menu_metodo = customtkinter.CTkComboBox(self.frame_pagoCuota, values=lista_metodo, variable="")
+
+        # Mostrar el menú desplegable
+        menu_metodo.grid(row=10, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
+
         label_profesor = customtkinter.CTkLabel(self.frame_pagoCuota, text="Profesor", font=('Century Gothic',15))
-        label_profesor.grid(row=9, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
+        label_profesor.grid(row=11, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
         entry_profesor = customtkinter.CTkEntry(self.frame_pagoCuota, width=220, height=25, corner_radius=10)
-        entry_profesor.grid(row=10, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
+        entry_profesor.grid(row=12, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
 
         button_confirmar = customtkinter.CTkButton(
             self.frame_pagoCuota,
             width=220,
             text="Confirmar",
-            command=lambda: (registrarPago([entry_cliente.get(), entry_pago.get(), menu_desplegable.get(), entry_profesor.get(), menu_vencimiento.get()]), self.frame_pagos.pack(pady=60),self.frame_pagoCuota.pack_forget()),corner_radius=6)
-        button_confirmar.grid(row=11, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
+            command=lambda: (registrarPago([entry_cliente.get(), entry_pago.get(), menu_desplegable.get(), entry_profesor.get(), menu_vencimiento.get(), menu_metodo.get()]), self.frame_pagos.pack(pady=60),self.frame_pagoCuota.pack_forget()),corner_radius=6)
+        button_confirmar.grid(row=13, column=1, padx=(0, 0), pady=(10, 0), sticky="nsew")
         
         actualizar_resultados3()
         lista_resultados_pago.bind("<<ListboxSelect>>", mostrar_seleccion3)
